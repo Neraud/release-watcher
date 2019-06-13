@@ -1,0 +1,27 @@
+logger:
+  type: stdout
+  level: INFO
+
+sources:
+  - type: inline
+    watchers:
+      - type: docker_registry
+        repo: registry-1.docker.io
+        image: python
+        tag: 3.7.2-alpine3.8
+        includes:
+          - 3\.[7-9]\.[0-9]+-alpine3\.
+        excludes:
+          - .*rc[0-9]*-.*
+          - .*[ab][1-9]-.*
+  - type: file
+    path: github_watchers.yaml
+
+outputs:
+  - type: yaml_file
+    path: out.yaml
+    displayUpToDate: yes
+  - type: csv_file
+    path: out.csv
+    displayHeader: yes
+    displayUpToDate: yes

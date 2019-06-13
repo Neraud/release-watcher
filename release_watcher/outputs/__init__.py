@@ -1,0 +1,6 @@
+from release_watcher.outputs.output_manager import register_output_type
+from release_watcher.outputs.csv_file_output import CsvFileOutputType
+from release_watcher.outputs.yaml_file_output import YamlFileOutputType
+
+register_output_type(CsvFileOutputType())
+register_output_type(YamlFileOutputType())

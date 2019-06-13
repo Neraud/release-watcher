@@ -1,0 +1,15 @@
+watchers:
+  - type: github_tag
+    repo: yaml/pyyaml
+    tag: 4.1
+    excludes:
+      - .*[ab][1-9]$
+  - type: github_release
+    repo: dateutil/dateutil
+    release: 2.6.0
+    includes:
+      - ^2\.6\.
+  - type: github_commit
+    repo: docker-library/python
+    branch: master
+    commit: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
