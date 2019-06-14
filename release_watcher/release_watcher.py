@@ -25,7 +25,7 @@ def main(config: str):
         logger.error("No configured watchers, nothing to do")
         sys.exit()
 
-    watcher_runner = WatcherRunner(watchers)
+    watcher_runner = WatcherRunner(global_config, watchers)
 
     if global_config.core.run_mode == 'once':
         _run_once(global_config, watcher_runner)

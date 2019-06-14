@@ -19,10 +19,13 @@ class LoggerConfig:
 class CoreConfig:
     """Model representing the core configuration"""
 
+    threads: int = None
     run_mode: str = None
     sleep_duration: int = None
 
-    def __init__(self, run_mode: str, sleep_duration: int = None):
+    def __init__(self, threads: int, run_mode: str,
+                 sleep_duration: int = None):
+        self.threads = threads
         self.run_mode = run_mode
         self.sleep_duration = sleep_duration
 

@@ -86,9 +86,16 @@ def _parse_conf(conf: Dict) -> GlobalConfig:
 def _parse_core_conf(conf: Dict) -> CoreConfig:
     logger.debug("Loading core configuration")
 
-    default_conf = {'runMode': 'once', 'sleepDuration': 5}
+    default_conf = {'threads': 2, 'runMode': 'once', 'sleepDuration': 5}
 
     core_conf = conf.get('core', default_conf)
+    threads = core_conf.get('threads', default_conf['threads'])
+
+    if not isinstance(threads, int):
+        logger.warning("threads '%s' is not a number, falling back to %d" %
+                       (threads, default_conf['threads']))
+        threads = default_conf['threads']
+
     run_mode = core_conf.get('runMode', default_conf['runMode'])
 
     sleep_duration = None
@@ -105,7 +112,7 @@ def _parse_core_conf(conf: Dict) -> CoreConfig:
                        (run_mode, default_conf['runMode']))
         run_mode = default_conf['runMode']
 
-    core_config = CoreConfig(run_mode)
+    core_config = CoreConfig(threads, run_mode)
     core_config.sleep_duration = sleep_duration
     return core_config
 

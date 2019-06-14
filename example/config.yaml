@@ -3,6 +3,7 @@ logger:
   level: INFO
 
 core:
+  threads: 2
   runMode: once
   #runMode: repeat
   #sleepDuration: 30

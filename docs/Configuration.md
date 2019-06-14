@@ -27,9 +27,12 @@ Allowed levels are : `DEBUG`, `INFO`, `WARN`, `ERROR`.
 
 ```yaml
 core:
+  threads: 2
   runMode: once|repeat
   sleepDuration: duration in seconds
 ```
+
+Watchers are executed in a thread pool with `threads` threads.
 
 With `runMode: once` (default), the programm simply exits once the results are written to the outputs.
 
