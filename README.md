@@ -27,6 +27,8 @@ New releases are written to an output.
 Release Watcher currently supports :
 - YAML file
 - CSV file
+- Prometheus file
+- Prometheus HTTP endpoint
 
 
 ## Installation

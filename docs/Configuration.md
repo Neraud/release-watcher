@@ -262,3 +262,59 @@ For example :
 Type,Friendly name,Current release date,Missed releases,Newest release,Newest release date
 docker_registry,registry-1.docker.io:library/python:3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,2,3.7.3-alpine3.9,2019-05-11 02:03:33.380024+00:00
 ```
+
+### Prometheus File
+
+You can export the outputs to a Prometheus file.
+
+```yaml
+- type: prometheus_file
+  path: /path/to/out.prom
+```
+
+* `path`: path to the prom file
+ 
+If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
+
+A single gauge is written : `missed_releases`, and it counts the number of missed releases.
+
+If has a `name` label which is a friendly representation of the current release.
+
+For example :
+
+```
+# HELP missed_releases Number of missed releases
+# TYPE missed_releases gauge
+missed_releases{name="registry-1.docker.io:library/python:3.7.2-alpine3.8"} 2.0
+```
+
+### Prometheus Http endpoint
+
+You can expose the outputs on an HTTP endpoint to be scraped by a Prometheus instance.
+
+```yaml
+- type: prometheus_http
+  port: 8080
+```
+
+* `port`: port to expose
+
+The metrics will be availble on http://[host_ip]:[port]/
+
+
+A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
+
+If has a `name` label which is a friendly representation of the current release.
+
+For example :
+
+```
+[many python standard metrics]
+
+# HELP missed_releases Number of missed releases
+# TYPE missed_releases gauge
+missed_releases{name="registry-1.docker.io:library/python:3.7.2-alpine3.8"} 2.0
+```
+
+*Note* : this exporter only makes sense with `core.runMode` set to `repeat`.
+When using `core.runMode` = `once`, the HTTP server will start and shutdown immediately.

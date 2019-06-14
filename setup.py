@@ -28,6 +28,7 @@ setup(
         'Click==7.0',
         'www-authenticate==0.9.2',
         'python-dateutil==2.6.0',
+        'prometheus_client==0.7.0',
     ],
     classifiers=[
         'License :: OSI Approved :: MIT License',

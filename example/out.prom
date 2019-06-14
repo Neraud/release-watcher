@@ -1,0 +1,6 @@
+# HELP missed_releases Number of missed releases
+# TYPE missed_releases gauge
+missed_releases{name="registry-1.docker.io:library/python:3.7.2-alpine3.8"} 2.0
+missed_releases{name="yaml/pyyaml:4.1"} 2.0
+missed_releases{name="dateutil/dateutil:2.6.0"} 1.0
+missed_releases{name="docker-library/python:master"} 2.0

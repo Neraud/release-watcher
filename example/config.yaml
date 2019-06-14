@@ -31,3 +31,7 @@ outputs:
     path: out.csv
     displayHeader: yes
     displayUpToDate: yes
+  - type: prometheus_file
+    path: out.prom
+  - type: prometheus_http
+    port: 8080
