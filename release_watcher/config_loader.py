@@ -5,7 +5,8 @@ from os import path
 from typing import Dict, Sequence
 from release_watcher.sources import source_manager
 from release_watcher.outputs import output_manager
-from release_watcher.config_models import GlobalConfig, LoggerConfig
+from release_watcher.config_models \
+    import GlobalConfig, LoggerConfig, CoreConfig
 
 try:
     from yaml import CLoader as Loader
@@ -70,6 +71,7 @@ def _init_logger(logger_conf: LoggerConfig):
 
 def _parse_conf(conf: Dict) -> GlobalConfig:
     config = GlobalConfig()
+    config.core = _parse_core_conf(conf)
     config.sources = _parse_sources_conf(conf)
     if not config.sources:
         raise Exception('No valid source configuration found')
@@ -79,6 +81,33 @@ def _parse_conf(conf: Dict) -> GlobalConfig:
         raise Exception('No valid output configuration found')
 
     return config
+
+
+def _parse_core_conf(conf: Dict) -> CoreConfig:
+    logger.debug("Loading core configuration")
+
+    default_conf = {'runMode': 'once', 'sleepDuration': 5}
+
+    core_conf = conf.get('core', default_conf)
+    run_mode = core_conf.get('runMode', default_conf['runMode'])
+
+    sleep_duration = None
+    if run_mode == 'repeat':
+        sleep_duration = core_conf.get('sleepDuration',
+                                       default_conf['sleepDuration'])
+        if not isinstance(sleep_duration, int):
+            logger.warning(
+                "sleepDuration '%s' is not a number, falling back to %d" %
+                (sleep_duration, default_conf['sleepDuration']))
+            sleep_duration = default_conf['sleepDuration']
+    elif run_mode != 'once':
+        logger.warning("runMode '%s' is unknown, falling back to '%s'" %
+                       (run_mode, default_conf['runMode']))
+        run_mode = default_conf['runMode']
+
+    core_config = CoreConfig(run_mode)
+    core_config.sleep_duration = sleep_duration
+    return core_config
 
 
 def _parse_sources_conf(conf: Dict) -> Sequence[source_manager.SourceConfig]:

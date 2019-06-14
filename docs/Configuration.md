@@ -23,6 +23,18 @@ logger:
 
 Allowed levels are : `DEBUG`, `INFO`, `WARN`, `ERROR`.
 
+## Core
+
+```yaml
+core:
+  runMode: once|repeat
+  sleepDuration: duration in seconds
+```
+
+With `runMode: once` (default), the programm simply exits once the results are written to the outputs.
+
+Using `runMode: repeat`, the program never stops (untill interrupted) and sleeps for `sleepDuration` between each execution.
+
 ## Sources
 
 Multiple sources can be used at the same time.

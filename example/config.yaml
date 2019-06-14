@@ -2,6 +2,11 @@ logger:
   type: stdout
   level: INFO
 
+core:
+  runMode: once
+  #runMode: repeat
+  #sleepDuration: 30
+
 sources:
   - type: inline
     watchers:

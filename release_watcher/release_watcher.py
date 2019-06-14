@@ -1,12 +1,14 @@
 import click
 import logging
 import sys
+import time
 from release_watcher import config_loader
 from release_watcher.watcher_runner import WatcherRunner
 from release_watcher.sources import source_manager
 from release_watcher.watchers import watcher_manager
 from release_watcher.watchers.watcher_models import WatchResult
 from release_watcher.outputs import output_manager
+from release_watcher.config_models import GlobalConfig
 from typing import Dict, Sequence
 logger = logging.getLogger(__name__)
 
@@ -16,16 +18,23 @@ logger = logging.getLogger(__name__)
 def main(config: str):
     """Entrypoint for the Release Watch application"""
 
-    conf = config_loader.load_conf(config)
-    watchers = _create_watchers(conf.sources)
+    global_config = config_loader.load_conf(config)
+    watchers = _create_watchers(global_config.sources)
 
     if not watchers:
         logger.error("No configured watchers, nothing to do")
         sys.exit()
 
     watcher_runner = WatcherRunner(watchers)
-    results = watcher_runner.run()
-    _generate_outputs(conf.outputs, results)
+
+    if global_config.core.run_mode == 'once':
+        _run_once(global_config, watcher_runner)
+    else:
+        while True:
+            _run_once(global_config, watcher_runner)
+            logger.debug('Sleeping %d seconds ...' %
+                         global_config.core.sleep_duration)
+            time.sleep(global_config.core.sleep_duration)
 
 
 def _create_watchers(sources_conf: Sequence[Dict]
@@ -45,6 +54,11 @@ def _create_watchers(sources_conf: Sequence[Dict]
             watcher = watcher_type.create_watcher(watcher_config)
             watchers.append(watcher)
     return watchers
+
+
+def _run_once(global_config: GlobalConfig, watcher_runner: WatcherRunner):
+    results = watcher_runner.run()
+    _generate_outputs(global_config.outputs, results)
 
 
 def _generate_outputs(outputs_conf: output_manager.OutputConfig,

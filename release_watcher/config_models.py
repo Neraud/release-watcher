@@ -16,9 +16,21 @@ class LoggerConfig:
         self.path = path
 
 
+class CoreConfig:
+    """Model representing the core configuration"""
+
+    run_mode: str = None
+    sleep_duration: int = None
+
+    def __init__(self, run_mode: str, sleep_duration: int = None):
+        self.run_mode = run_mode
+        self.sleep_duration = sleep_duration
+
+
 class GlobalConfig:
     """Model representing the main configuration"""
 
+    core: CoreConfig = None
     sources: Sequence[source_manager.SourceConfig] = []
     outputs: Sequence[output_manager.OutputConfig] = []
 
