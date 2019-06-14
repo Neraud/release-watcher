@@ -6,9 +6,7 @@ from release_watcher import config_loader
 from release_watcher.watcher_runner import WatcherRunner
 from release_watcher.sources import source_manager
 from release_watcher.watchers import watcher_manager
-from release_watcher.watchers.watcher_models import WatchResult
 from release_watcher.outputs import output_manager
-from release_watcher.config_models import GlobalConfig
 from typing import Dict, Sequence
 logger = logging.getLogger(__name__)
 
@@ -27,11 +25,13 @@ def main(config: str):
 
     watcher_runner = WatcherRunner(global_config, watchers)
 
+    outputs = _create_ouputs(global_config.outputs)
+
     if global_config.core.run_mode == 'once':
-        _run_once(global_config, watcher_runner)
+        _run_once(watcher_runner, outputs)
     else:
         while True:
-            _run_once(global_config, watcher_runner)
+            _run_once(watcher_runner, outputs)
             logger.debug('Sleeping %d seconds ...' %
                          global_config.core.sleep_duration)
             time.sleep(global_config.core.sleep_duration)
@@ -56,16 +56,20 @@ def _create_watchers(sources_conf: Sequence[Dict]
     return watchers
 
 
-def _run_once(global_config: GlobalConfig, watcher_runner: WatcherRunner):
-    results = watcher_runner.run()
-    _generate_outputs(global_config.outputs, results)
+def _create_ouputs(outputs_conf: output_manager.OutputConfig
+                   ) -> Sequence[output_manager.Output]:
+    logger.info('Creating outputs')
 
-
-def _generate_outputs(outputs_conf: output_manager.OutputConfig,
-                      results: Sequence[WatchResult]):
-    logger.info('Generating outputs')
-    for output_conf in outputs_conf:
-        output = output_manager.get_output_type(
+    return [
+        output_manager.get_output_type(
             output_conf.name).create_output(output_conf)
+        for output_conf in outputs_conf
+    ]
+
+
+def _run_once(watcher_runner: WatcherRunner,
+              outputs: Sequence[output_manager.Output]):
+    results = watcher_runner.run()
+    for output in outputs:
         logger.info(' - output : %s', output)
         output.outputs(results)
