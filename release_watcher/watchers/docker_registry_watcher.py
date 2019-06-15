@@ -176,7 +176,7 @@ class DockerRegistryWatcherType(WatcherType):
         if "/" not in image:
             image = "library/%s" % image
 
-        tag = watcher_config['tag']
+        tag = str(watcher_config['tag'])
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
 
