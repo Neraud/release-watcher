@@ -33,9 +33,37 @@ Release Watcher currently supports :
 
 ## Installation
 
+### Native
+
 ```shell
 git clone https://github.com/Neraud/release-watcher
 python3 -m pip install .
+```
+
+### Docker
+
+```shell
+git clone https://github.com/Neraud/release-watcher
+docker build -t release_watcher .
+```
+
+You can use the following environment variables : 
+
+* `CONFIG_PATH` (defaults to `/data/config.yaml`) : path to the configuration file
+
+The easiest way to use the image is to mount a `/data` folder : 
+
+```shell
+mkdir data
+cp example/{config,github_watchers}.yaml data/
+# vi data/config.yaml
+docker run -v $(pwd)/data:/data release_watcher
+```
+
+If you want to use the Prometheus HTTP output, you will need to forward the configured port.
+
+```shell
+docker run -v $(pwd)/data:/data -p 8080:8080 release_watcher
 ```
 
 ## Configuration
