@@ -40,7 +40,7 @@ class BaseYamlSourceLoader(Source):
                         watcher_conf)
                     parsed_sources_conf.append(parsed_source_conf)
                 except Exception as e:
-                    logger.error('Error configuring a watcher : %s', e)
+                    logger.exception('Error configuring a watcher : %s', e)
 
         return parsed_sources_conf
 

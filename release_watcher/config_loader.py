@@ -126,7 +126,7 @@ def _parse_sources_conf(conf: Dict) -> Sequence[source_manager.SourceConfig]:
             try:
                 sources_conf.append(_parse_one_source_conf(conf, source_conf))
             except Exception as e:
-                logger.error('Error configuring a source : %s', e)
+                logger.exception('Error configuring a source : %s', e)
 
     return sources_conf
 
@@ -153,7 +153,7 @@ def _parse_outputs_conf(conf: Dict) -> Sequence[output_manager.OutputConfig]:
                 parsed_outputs_conf.append(
                     _parse_one_output_conf(conf, output_conf))
             except Exception as e:
-                logger.error('Error configuring an output : %s', e)
+                logger.exception('Error configuring an output : %s', e)
 
     return parsed_outputs_conf
 

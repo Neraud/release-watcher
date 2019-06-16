@@ -43,7 +43,7 @@ class Watcher(metaclass=abc.ABCMeta):
                 self, duration_ms, len(result.missed_releases))
             return result
         except Exception as e:
-            logger.error('Error running %s : %s', self, e)
+            logger.exception('Error running %s : %s', self, e)
 
     @abc.abstractmethod
     def _do_watch(self) -> WatchResult:
