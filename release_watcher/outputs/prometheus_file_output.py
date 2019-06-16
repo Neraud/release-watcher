@@ -50,7 +50,7 @@ class PrometheusFileOutput(Output):
                                                registry=self.registry)
 
         for result in results:
-            self.missed_releases_gauge.labels(str(result.config)).set(
+            self.missed_releases_gauge.labels(str(result.config.name)).set(
                 len(result.missed_releases))
 
         write_to_textfile(self.config.path, self.registry)

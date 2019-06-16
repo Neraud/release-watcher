@@ -1,5 +1,5 @@
-Type,Friendly name,Current release date,Missed releases,Newest release,Newest release date
-docker_registry,registry-1.docker.io:library/python:3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,2,3.7.3-alpine3.9,2019-05-11 02:03:33.380024+00:00
-github_tag,yaml/pyyaml:4.1,2018-06-26 22:08:15+00:00,2,5.1.1,2019-06-06 22:14:10+00:00
-github_release,dateutil/dateutil:2.6.0,2016-11-08 15:30:35+00:00,1,2.6.1,2017-07-10 18:39:55+00:00
-github_commit,docker-library/python:master,2019-05-07 15:49:35+00:00,2,1358d771b345c11674a5f79a89b820647fc27d4d,2019-06-13 23:22:13+00:00
+Type,Name,Current release,Current release date,Missed releases,Newest release,Newest release date
+docker_registry,PythonAlpineImage,3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,2,3.7.3-alpine3.9,2019-05-11 02:03:33.380024+00:00
+github_tag,PyYAML,4.1,2018-06-26 22:08:15+00:00,2,5.1.1,2019-06-06 22:14:10+00:00
+github_release,DateUtil,2.6.0,2016-11-08 15:30:35+00:00,1,2.6.1,2017-07-10 18:39:55+00:00
+github_commit,PythonDockerSource,f6e98ea8b8ef4e9a520e05d481d2640a35f9542c,2019-05-07 15:49:35+00:00,2,1358d771b345c11674a5f79a89b820647fc27d4d,2019-06-13 23:22:13+00:00

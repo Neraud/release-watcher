@@ -51,7 +51,7 @@ class PrometheusHttpOutput(Output):
                                                ['name'])
 
         for result in results:
-            self.missed_releases_gauge.labels(str(result.config)).set(
+            self.missed_releases_gauge.labels(str(result.config.name)).set(
                 len(result.missed_releases))
 
 

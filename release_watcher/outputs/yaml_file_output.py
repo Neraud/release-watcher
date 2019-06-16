@@ -44,9 +44,11 @@ class YamlFileOutput(Output):
                 continue
 
             result_dict = {}
-            result_dict['type'] = result.config.name
-            result_dict['friendlyName'] = str(result.config)
+            result_dict['type'] = result.config.watcher_type_name
+            result_dict['name'] = result.config.name
             if result.current_release:
+                result_dict['currentRelease'] = \
+                    result.current_release.name
                 result_dict['currentReleaseDate'] = \
                     result.current_release.release_date
 

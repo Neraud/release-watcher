@@ -50,7 +50,7 @@ def _create_watchers(sources_conf: Sequence[Dict]
                      source_conf.name)
         for watcher_config in watchers_for_source:
             watcher_type = watcher_manager.get_watcher_type(
-                watcher_config.name)
+                watcher_config.watcher_type_name)
             watcher = watcher_type.create_watcher(watcher_config)
             watchers.append(watcher)
     return watchers

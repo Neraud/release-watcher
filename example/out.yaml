@@ -1,46 +1,50 @@
 results:
-- currentReleaseDate: 2019-03-07 22:47:31.896533+00:00
-  friendlyName: registry-1.docker.io:library/python:3.7.2-alpine3.8
+- currentRelease: 3.7.2-alpine3.8
+  currentReleaseDate: 2019-03-07 22:47:31.896533+00:00
   missedReleaseCount: 2
   missedReleases:
   - date: '2019-05-11 02:03:33.380024+00:00'
     name: 3.7.3-alpine3.9
   - date: '2019-05-08 00:13:13.242555+00:00'
     name: 3.7.3-alpine3.8
+  name: PythonAlpineImage
   newestRelease:
     date: '2019-05-11 02:03:33.380024+00:00'
     name: 3.7.3-alpine3.9
   type: docker_registry
-- currentReleaseDate: 2018-06-26 22:08:15+00:00
-  friendlyName: yaml/pyyaml:4.1
+- currentRelease: '4.1'
+  currentReleaseDate: 2018-06-26 22:08:15+00:00
   missedReleaseCount: 2
   missedReleases:
   - date: '2019-06-06 22:14:10+00:00'
     name: 5.1.1
   - date: '2019-03-13 15:45:34+00:00'
     name: '5.1'
+  name: PyYAML
   newestRelease:
     date: '2019-06-06 22:14:10+00:00'
     name: 5.1.1
   type: github_tag
-- currentReleaseDate: 2016-11-08 15:30:35+00:00
-  friendlyName: dateutil/dateutil:2.6.0
+- currentRelease: 2.6.0
+  currentReleaseDate: 2016-11-08 15:30:35+00:00
   missedReleaseCount: 1
   missedReleases:
   - date: '2017-07-10 18:39:55+00:00'
     name: 2.6.1
+  name: DateUtil
   newestRelease:
     date: '2017-07-10 18:39:55+00:00'
     name: 2.6.1
   type: github_release
-- currentReleaseDate: 2019-05-07 15:49:35+00:00
-  friendlyName: docker-library/python:master
+- currentRelease: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
+  currentReleaseDate: 2019-05-07 15:49:35+00:00
   missedReleaseCount: 2
   missedReleases:
   - date: '2019-06-13 23:22:13+00:00'
     name: 1358d771b345c11674a5f79a89b820647fc27d4d
   - date: '2019-06-04 21:49:14+00:00'
     name: 4baab390a3ba83908b869277491c4ce2ca283373
+  name: PythonDockerSource
   newestRelease:
     date: '2019-06-13 23:22:13+00:00'
     name: 1358d771b345c11674a5f79a89b820647fc27d4d

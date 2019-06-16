@@ -13,7 +13,7 @@ from release_watcher.watchers.watcher_manager \
 
 logger = logging.getLogger(__name__)
 
-WATCHER_NAME = 'docker_registry'
+WATCHER_TYPE_NAME = 'docker_registry'
 
 
 class DockerRegistryWatcherConfig(WatcherConfig):
@@ -25,9 +25,9 @@ class DockerRegistryWatcherConfig(WatcherConfig):
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
 
-    def __init__(self, repo: str, image: str, tag: str,
+    def __init__(self, name: str, repo: str, image: str, tag: str,
                  includes: Sequence[str], excludes: Sequence[str]):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME, name)
         self.repo = repo
         self.image = image
         self.tag = tag
@@ -166,7 +166,7 @@ class DockerRegistryWatcherType(WatcherType):
     """Class to represent the DockerRegistryWatcher type of Watcher"""
 
     def __init__(self):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME)
 
     def parse_config(self,
                      watcher_config: Dict) -> DockerRegistryWatcherConfig:
@@ -179,8 +179,9 @@ class DockerRegistryWatcherType(WatcherType):
         tag = str(watcher_config['tag'])
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
+        name = watcher_config.get('name', '%s:%s' % (repo, image))
 
-        return DockerRegistryWatcherConfig(repo, image, tag, includes,
+        return DockerRegistryWatcherConfig(name, repo, image, tag, includes,
                                            excludes)
 
     def create_watcher(self, watcher_config: DockerRegistryWatcherConfig

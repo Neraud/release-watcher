@@ -11,7 +11,7 @@ from release_watcher.watchers.watcher_manager \
 
 logger = logging.getLogger(__name__)
 
-WATCHER_NAME = 'github_release'
+WATCHER_TYPE_NAME = 'github_release'
 
 
 class GithubReleaseWatcherConfig(WatcherConfig):
@@ -22,9 +22,9 @@ class GithubReleaseWatcherConfig(WatcherConfig):
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
 
-    def __init__(self, repo: str, release: str, includes: Sequence[str],
-                 excludes: Sequence[str]):
-        super().__init__(WATCHER_NAME)
+    def __init__(self, name: str, repo: str, release: str,
+                 includes: Sequence[str], excludes: Sequence[str]):
+        super().__init__(WATCHER_TYPE_NAME, name)
         self.repo = repo
         self.release = release
         self.includes = includes
@@ -100,7 +100,7 @@ class GithubReleaseWatcherType(WatcherType):
     """Class to represent the GithubReleaseWatcher type of Watcher"""
 
     def __init__(self):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME)
 
     def parse_config(self, watcher_config: Dict) -> GithubReleaseWatcherConfig:
         repo = watcher_config['repo']
@@ -108,8 +108,10 @@ class GithubReleaseWatcherType(WatcherType):
 
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
+        name = watcher_config.get('name', repo)
 
-        return GithubReleaseWatcherConfig(repo, release, includes, excludes)
+        return GithubReleaseWatcherConfig(name, repo, release, includes,
+                                          excludes)
 
     def create_watcher(self, watcher_config: GithubReleaseWatcherConfig
                        ) -> GithubReleaseWatcher:

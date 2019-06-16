@@ -82,7 +82,8 @@ Each watcher configures a *thing* to watch new releases for.
 You can watch for a docker image in any v2 registry.
 
 ```yaml
-- type: docker_registry
+- name: PythonAlpineImage
+  type: docker_registry
   repo: registry-1.docker.io
   image: python
   tag: 3.7.2-alpine3.8
@@ -93,6 +94,7 @@ You can watch for a docker image in any v2 registry.
     - .*[ab][1-9]-.*
 ```
 
+* `name`: optional name for the watcher. Defaults to `[repo]:[image]`
 * `repo`: the domain of the docker registry.
 
 For DockerHub, you need to use the real repo domain : `registry-1.docker.io`
@@ -117,13 +119,15 @@ If `tag` is found in the repo, only newer tags are listed.
 You can watch for a release in a GitHub repository.
 
 ```yaml
-- type: github_release
+- name: DateUtil
+  type: github_release
   repo: dateutil/dateutil
   release: 2.6.0
   includes:
     - ^2\.6\.
 ```
 
+* `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `release`: the currently used release (based on the release tag name)
 * `includes`: an optional list of regular expressions that a tag must match to be considered
@@ -139,7 +143,8 @@ If `release` is found in the repo, only newer releases are listed.
 You can watch for a tag in a GitHub repository.
 
 ```yaml
-- type: github_tag
+- name: PyYAML
+  type: github_tag
   repo: yaml/pyyaml
   tag: 4.1
   includes:
@@ -148,6 +153,7 @@ You can watch for a tag in a GitHub repository.
     - .*[ab][1-9]$
 ```
 
+* `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `tag`: the currently used tag
 * `includes`: an optional list of regular expressions that a tag must match to be considered
@@ -165,12 +171,14 @@ If `tag` is found on the repo, only newer tags are listed.
 You can watch for commits in a GitHub repository.
 
 ```yaml
-- type: github_commit
+- name: PythonDockerSource
+  type: github_commit
   repo: docker-library/python
   branch: master
   commit: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
 ```
 
+* `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `branch`: the branch to scan
 * `commit`: the current commit hash
@@ -203,8 +211,9 @@ If `path` doesn't start with a `/`, it is assumed to be relative to the main con
 
 The generated file will contain a list of results, each with : 
 
+* `currentRelease` : the current release
 * `currentReleaseDate` : the date of the current release
-* `friendlyName` : a friendly representation of the current release 
+* `name` : the watcher name
   * for example `docker_repo`:`docker_image`:`tag`
 * `missedReleaseCount` : the number of missed releases
 * `missedReleases` : the list of missed releases, with a `date` and `name` for each one of them
@@ -215,14 +224,15 @@ Example :
 
 ```yaml
 results:
-- currentReleaseDate: 2019-03-07 22:47:31.896533+00:00
-  friendlyName: library/python:3.7.2-alpine3.8
+- currentRelease: 3.7.2-alpine3.8
+  currentReleaseDate: 2019-03-07 22:47:31.896533+00:00
   missedReleaseCount: 2
   missedReleases:
   - date: '2019-05-11 02:03:33.380024+00:00'
     name: 3.7.3-alpine3.9
   - date: '2019-05-08 00:13:13.242555+00:00'
     name: 3.7.3-alpine3.8
+  name: PythonImage
   newestRelease:
     date: '2019-05-11 02:03:33.380024+00:00'
     name: 3.7.3-alpine3.9
@@ -249,8 +259,8 @@ If `path` doesn't start with a `/`, it is assumed to be relative to the main con
 
 The generated file will contain 1 row for each result, with the following columns : 
 * `Type`: the watcher type
-* `Friendly name`: a friendly representation of the current release 
-  * for example `docker_repo`:`docker_image`:`tag`
+* `Name`: the watcher name
+* `Current release`: the current release
 * `Current release date`: the date of the current release
 * `Missed releases`: the number of missed releases
 * `Newest release`: the newest release name
@@ -259,8 +269,8 @@ The generated file will contain 1 row for each result, with the following column
 For example : 
 
 ```csv
-Type,Friendly name,Current release date,Missed releases,Newest release,Newest release date
-docker_registry,registry-1.docker.io:library/python:3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,2,3.7.3-alpine3.9,2019-05-11 02:03:33.380024+00:00
+Type,Name,Current release,Current release date,Missed releases,Newest release,Newest release date
+docker_registry,PythonImage,3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,2,3.7.3-alpine3.9,2019-05-11 02:03:33.380024+00:00
 ```
 
 ### Prometheus File
@@ -278,14 +288,14 @@ If `path` doesn't start with a `/`, it is assumed to be relative to the main con
 
 A single gauge is written : `missed_releases`, and it counts the number of missed releases.
 
-If has a `name` label which is a friendly representation of the current release.
+If has a `name` label which is the watcher name.
 
 For example :
 
 ```
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
-missed_releases{name="registry-1.docker.io:library/python:3.7.2-alpine3.8"} 2.0
+missed_releases{name="PythonAlpineImage"} 2.0
 ```
 
 ### Prometheus Http endpoint
@@ -304,7 +314,7 @@ The metrics will be availble on http://[host_ip]:[port]/
 
 A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
 
-If has a `name` label which is a friendly representation of the current release.
+If has a `name` label which is the watcher name.
 
 For example :
 
@@ -313,7 +323,7 @@ For example :
 
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
-missed_releases{name="registry-1.docker.io:library/python:3.7.2-alpine3.8"} 2.0
+missed_releases{name="PythonAlpineImage"} 2.0
 ```
 
 *Note* : this exporter only makes sense with `core.runMode` set to `repeat`.

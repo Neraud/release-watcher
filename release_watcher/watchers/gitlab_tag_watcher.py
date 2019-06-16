@@ -12,7 +12,7 @@ from release_watcher.watchers.watcher_manager \
 
 logger = logging.getLogger(__name__)
 
-WATCHER_NAME = 'github_tag'
+WATCHER_TYPE_NAME = 'github_tag'
 
 
 class GithubTagWatcherConfig(WatcherConfig):
@@ -23,9 +23,9 @@ class GithubTagWatcherConfig(WatcherConfig):
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
 
-    def __init__(self, repo: str, tag: str, includes: Sequence[str],
+    def __init__(self, name: str, repo: str, tag: str, includes: Sequence[str],
                  excludes: Sequence[str]):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME, name)
         self.repo = repo
         self.tag = tag
         self.includes = includes
@@ -112,7 +112,7 @@ class GithubTagWatcherType(WatcherType):
     """Class to represent the GithubTagWatcher type of Watcher"""
 
     def __init__(self):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME)
 
     def parse_config(self, watcher_config) -> GithubTagWatcherConfig:
         repo = watcher_config['repo']
@@ -120,8 +120,9 @@ class GithubTagWatcherType(WatcherType):
 
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
+        name = watcher_config.get('name', repo)
 
-        return GithubTagWatcherConfig(repo, tag, includes, excludes)
+        return GithubTagWatcherConfig(name, repo, tag, includes, excludes)
 
     def create_watcher(self, watcher_config: GithubTagWatcherConfig
                        ) -> GithubTagWatcher:

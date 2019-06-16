@@ -49,7 +49,7 @@ class CsvFileOutput(Output):
 
             if self.config.display_header:
                 csv_writer.writerow([
-                    'Type', 'Friendly name', 'Current release date',
+                    'Type', 'Name', 'Current release', 'Current release date',
                     'Missed releases', 'Newest release', 'Newest release date'
                 ])
 
@@ -60,11 +60,12 @@ class CsvFileOutput(Output):
                 row = self._prepare_one_csv_row(result)
                 csv_writer.writerow(row)
 
-    def _prepare_one_csv_row(self,
-                             result: Sequence[watcher_models.WatchResult]):
+    def _prepare_one_csv_row(self, result: watcher_models.WatchResult):
         if result.current_release:
+            current_r = result.current_release.name
             current_r_date = result.current_release.release_date
         else:
+            current_r = ""
             current_r_date = ""
 
         if result.most_recent_release:
@@ -75,8 +76,8 @@ class CsvFileOutput(Output):
             most_recent_r_date = ""
 
         return [
-            result.config.name,
-            str(result.config), current_r_date,
+            result.config.watcher_type_name, result.config.name, current_r,
+            current_r_date,
             len(result.missed_releases), most_recent_r_name, most_recent_r_date
         ]
 

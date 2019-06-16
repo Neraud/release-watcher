@@ -10,7 +10,7 @@ from release_watcher.watchers.watcher_manager \
 
 logger = logging.getLogger(__name__)
 
-WATCHER_NAME = 'github_commit'
+WATCHER_TYPE_NAME = 'github_commit'
 
 
 class GithubCommitWatcherConfig(WatcherConfig):
@@ -20,8 +20,8 @@ class GithubCommitWatcherConfig(WatcherConfig):
     branch: str = None
     commit: str = None
 
-    def __init__(self, repo: str, branch: str, commit: str):
-        super().__init__(WATCHER_NAME)
+    def __init__(self, name: str, repo: str, branch: str, commit: str):
+        super().__init__(WATCHER_TYPE_NAME, name)
         self.repo = repo
         self.branch = branch
         self.commit = commit
@@ -84,14 +84,15 @@ class GithubCommitWatcherType(WatcherType):
     """Class to represent the GithubCommitWatcher type of Watcher"""
 
     def __init__(self):
-        super().__init__(WATCHER_NAME)
+        super().__init__(WATCHER_TYPE_NAME)
 
     def parse_config(self, watcher_config: Dict):
         repo = watcher_config['repo']
         branch = watcher_config['branch']
         commit = str(watcher_config['commit'])
+        name = watcher_config.get('name', repo)
 
-        return GithubCommitWatcherConfig(repo, branch, commit)
+        return GithubCommitWatcherConfig(name, repo, branch, commit)
 
     def create_watcher(self, watcher_config: GithubCommitWatcherConfig
                        ) -> GithubCommitWatcher:
