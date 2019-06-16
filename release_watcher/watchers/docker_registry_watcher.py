@@ -173,7 +173,7 @@ class DockerRegistryWatcherType(WatcherType):
         repo = watcher_config['repo']
         image = watcher_config['image']
 
-        if "/" not in image:
+        if repo == "registry-1.docker.io" and "/" not in image:
             image = "library/%s" % image
 
         tag = str(watcher_config['tag'])

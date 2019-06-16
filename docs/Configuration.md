@@ -99,7 +99,7 @@ For DockerHub, you need to use the real repo domain : `registry-1.docker.io`
 
 * `image`: the docker image to watch
 
-If the image name doesn't contain a `/`, `library/` is automatically added (example : `python` becomes `library/python`)
+For the DockerHub repo (`registry-1.docker.io`), if the image name doesn't contain a `/`, `library/` is automatically added (example : `python` becomes `library/python`)
 
 * `tag`: the currently used tag
 * `includes`: an optional list of regular expressions that a tag must match to be considered
