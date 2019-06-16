@@ -9,6 +9,7 @@ search for new releases.
 
 A source handles listing the *things* you want to watch for.
 Release Watcher currently supports :
+
 * inline YAML configuration, inside config.yaml
 * external YAML file
 
@@ -16,20 +17,21 @@ Release Watcher currently supports :
 
 A watcher is a type of *thing* you want to watch for.
 Release Watcher currently supports :
-- Docker image : watchs for new tags pushed on a docker v2 registry
-- Github release : watchs for a new release in a Github repository
-- Github tag : watchs for a new tag in a Github repository
-- Github commit : watchs for new commits in a Github repository
+
+* Docker image : watchs for new tags pushed on a docker v2 registry
+* Github release : watchs for a new release in a Github repository
+* Github tag : watchs for a new tag in a Github repository
+* Github commit : watchs for new commits in a Github repository
 
 ## Outputs
 
 New releases are written to an output.
 Release Watcher currently supports :
-- YAML file
-- CSV file
-- Prometheus file
-- Prometheus HTTP endpoint
 
+* YAML file
+* CSV file
+* Prometheus file
+* Prometheus HTTP endpoint
 
 ## Installation
 
@@ -47,11 +49,11 @@ git clone https://github.com/Neraud/release-watcher
 docker build -t release_watcher .
 ```
 
-You can use the following environment variables : 
+You can use the following environment variables :
 
 * `CONFIG_PATH` (defaults to `/data/config.yaml`) : path to the configuration file
 
-The easiest way to use the image is to mount a `/data` folder : 
+The easiest way to use the image is to mount a `/data` folder :
 
 ```shell
 mkdir data

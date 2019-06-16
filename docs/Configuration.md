@@ -72,7 +72,6 @@ watchers:
   - [watcher_n]
 ```
 
-
 ## Watchers
 
 Each watcher configures a *thing* to watch new releases for.
@@ -112,7 +111,6 @@ We only want tags for a python v3.x.x based on alpine 3.x (include `3\.[7-9]\.[0
 We also want to ignore RCs (exclude `.*rc[0-9]*-.*`) and alphas/betas (exclude `.*[ab][1-9]-.*`)
 
 If `tag` is found in the repo, only newer tags are listed.
-
 
 ### GitHub Release
 
@@ -209,7 +207,7 @@ If `path` doesn't start with a `/`, it is assumed to be relative to the main con
 
 * `displayUpToDate`: if set to `no`, only watchers with new releases will be listed
 
-The generated file will contain a list of results, each with : 
+The generated file will contain a list of results, each with :
 
 * `currentRelease` : the current release
 * `currentReleaseDate` : the date of the current release
@@ -220,7 +218,7 @@ The generated file will contain a list of results, each with :
 * `newestRelease` : the newest release, with a `date` and `name`
 * `type` : the watcher type
 
-Example : 
+Example :
 
 ```yaml
 results:
@@ -251,13 +249,14 @@ You can export the outputs to a CSV file.
 ```
 
 * `path`: path to the csv file
- 
+
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
 * `displayUpToDate` (optionnal, default `yes`): if set to `no`, only watchers with new releases will be listed
 * `displayHeaders` (optionnal, default `yes`): if set to `no`, the header line is skipped
 
-The generated file will contain 1 row for each result, with the following columns : 
+The generated file will contain 1 row for each result, with the following columns :
+
 * `Type`: the watcher type
 * `Name`: the watcher name
 * `Current release`: the current release
@@ -266,7 +265,7 @@ The generated file will contain 1 row for each result, with the following column
 * `Newest release`: the newest release name
 * `Newest release date`: the newest release date
 
-For example : 
+For example :
 
 ```csv
 Type,Name,Current release,Current release date,Missed releases,Newest release,Newest release date
@@ -283,7 +282,7 @@ You can export the outputs to a Prometheus file.
 ```
 
 * `path`: path to the prom file
- 
+
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
 A single gauge is written : `missed_releases`, and it counts the number of missed releases.
@@ -292,7 +291,7 @@ If has a `name` label which is the watcher name.
 
 For example :
 
-```
+```go
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
 missed_releases{name="PythonAlpineImage"} 2.0
@@ -309,8 +308,7 @@ You can expose the outputs on an HTTP endpoint to be scraped by a Prometheus ins
 
 * `port`: port to expose
 
-The metrics will be availble on http://[host_ip]:[port]/
-
+The metrics will be availble on <http://[host_ip]:[port]/>
 
 A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
 
@@ -318,7 +316,7 @@ If has a `name` label which is the watcher name.
 
 For example :
 
-```
+```go
 [many python standard metrics]
 
 # HELP missed_releases Number of missed releases
