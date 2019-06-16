@@ -1,5 +1,6 @@
 import logging
 import abc
+import time
 from typing import Dict
 from release_watcher.watchers.watcher_models import WatchResult
 
@@ -33,7 +34,14 @@ class Watcher(metaclass=abc.ABCMeta):
 
         logger.info(" - running %s", self)
         try:
-            return self._do_watch()
+            start_time = time.time()
+            result = self._do_watch()
+            end_time = time.time()
+            duration_ms = (end_time - start_time) * 1000
+            logger.info(
+                " = Finished running %s in %d ms (%d missed releases found)",
+                self, duration_ms, len(result.missed_releases))
+            return result
         except Exception as e:
             logger.error('Error running %s : %s', self, e)
 
