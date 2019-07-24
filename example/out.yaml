@@ -10,6 +10,17 @@ results:
     date: '2019-05-08 00:13:13.242555+00:00'
     name: 3.7.3-alpine3.8
   type: docker_registry
+- currentRelease: '5.1'
+  currentReleaseDate: 2019-03-13 16:35:30
+  missedReleaseCount: 1
+  missedReleases:
+  - date: '2019-06-06 22:31:02'
+    name: 5.1.1
+  name: PyYAML PyPI
+  newestRelease:
+    date: '2019-06-06 22:31:02'
+    name: 5.1.1
+  type: pypi
 - currentRelease: '4.1'
   currentReleaseDate: 2018-06-26 22:08:15+00:00
   missedReleaseCount: 2
@@ -18,7 +29,7 @@ results:
     name: 5.1.1
   - date: '2019-03-13 15:45:34+00:00'
     name: '5.1'
-  name: PyYAML
+  name: PyYAML Repo
   newestRelease:
     date: '2019-06-06 22:14:10+00:00'
     name: 5.1.1

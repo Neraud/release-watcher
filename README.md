@@ -18,10 +18,11 @@ Release Watcher currently supports :
 A watcher is a type of *thing* you want to watch for.
 Release Watcher currently supports :
 
-* Docker image : watchs for new tags pushed on a docker v2 registry
-* Github release : watchs for a new release in a Github repository
-* Github tag : watchs for a new tag in a Github repository
-* Github commit : watchs for new commits in a Github repository
+* Docker image : watches for new tags pushed on a docker v2 registry
+* Github release : watches for a new release in a Github repository
+* Github tag : watches for a new tag in a Github repository
+* Github commit : watches for new commits in a Github repository
+* Python Package Index (PyPI) : watches for new releases
 
 ## Outputs
 

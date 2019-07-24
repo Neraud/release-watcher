@@ -185,6 +185,30 @@ In the example above, we are watching new tags on the `docker-library/python` re
 
 If `commit` is found on the repo, only newer tags are listed.
 
+### PyPI release
+
+You can watch for releases of a PyPI package.
+
+```yaml
+- name: PyYAML
+  type: pypi
+  package: PyYAML
+  version: 5.1.0
+  includes: 
+    - 5\..*
+  excludes: 
+    - .*[ab][1-9]$
+```
+
+* `name`: optional name for the watcher. Defaults to `[package]`
+* `package`: the package name
+* `version`: the current version
+* `includes`: an optional list of regular expressions that a version must match to be considered
+* `excludes`: an optional list of regular expressions that a version must not match to be considered
+
+In the example above, we are watching new releases of the `PyYAML` package.
+We only want to consider versions `5.*` and ignore betas (exclude `.*[ab] [1-9]$`)
+
 ## Outputs
 
 Once new releases have been found, you need to save the output.

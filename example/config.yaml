@@ -21,6 +21,14 @@ sources:
         excludes:
           - .*rc[0-9]*-.*
           - .*[ab][1-9]-.*
+      - name: PyYAML PyPI
+        type: pypi
+        package: PyYAML
+        version: 5.1
+        includes: 
+          - 5\..*
+        excludes: 
+          - .*[ab][1-9]$
   - type: file
     path: github_watchers.yaml
 
