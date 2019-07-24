@@ -17,7 +17,7 @@ sources:
         image: python
         tag: 3.7.2-alpine3.8
         includes:
-          - 3\.[7-9]\.[0-9]+-alpine3\.
+          - 3\.[7-9]\.[0-9]+-alpine3\.8
         excludes:
           - .*rc[0-9]*-.*
           - .*[ab][1-9]-.*

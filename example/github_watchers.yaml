@@ -15,4 +15,4 @@ watchers:
     type: github_commit
     repo: docker-library/python
     branch: master
-    commit: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
+    commit: 13ae0c0b3bf09ad3cf2f75f5e9a4ab2415a4b109

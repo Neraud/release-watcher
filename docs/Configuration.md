@@ -87,7 +87,7 @@ You can watch for a docker image in any v2 registry.
   image: python
   tag: 3.7.2-alpine3.8
   includes:
-    - 3\.[7-9]\.[0-9]+-alpine3\.
+    - 3\.[7-9]\.[0-9]+-alpine3\.8
   excludes:
     - .*rc[0-9]*-.*
     - .*[ab][1-9]-.*
@@ -107,7 +107,7 @@ For the DockerHub repo (`registry-1.docker.io`), if the image name doesn't conta
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
 
 In the example above, we are watching new tags on the `python` image on DockerHub.
-We only want tags for a python v3.x.x based on alpine 3.x (include `3\.[7-9]\.[0-9]+-alpine3\.`)
+We only want tags for a python v3.x.x based on alpine 3.8 (include `3\.[7-9]\.[0-9]+-alpine3\.8`)
 We also want to ignore RCs (exclude `.*rc[0-9]*-.*`) and alphas/betas (exclude `.*[ab][1-9]-.*`)
 
 If `tag` is found in the repo, only newer tags are listed.

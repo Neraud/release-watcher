@@ -1,6 +1,6 @@
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 2.0
+missed_releases{name="PythonAlpineImage"} 1.0
 missed_releases{name="PyYAML"} 2.0
 missed_releases{name="DateUtil"} 1.0
 missed_releases{name="PythonDockerSource"} 2.0
