@@ -84,30 +84,38 @@ class DockerRegistryWatcher(Watcher):
         logger.debug('Missed tags : %s', missed_releases)
         return WatchResult(self.config, current_release, missed_releases)
 
-    def _get_all_tags_from_registry(self) -> Sequence[str]:
-        api_response = self._call_registry_api_tags_list()
+    def _get_all_tags_from_registry(self, page_url=None) -> Sequence[str]:
+        api_response = self._call_registry_api_tags_list(page_url)
 
         if api_response.status_code == 401:
             if 'Www-Authenticate' in api_response.headers:
                 logger.debug("Auhentication required, requesting a token")
                 self.auth_token = self._call_docker_registry_api_auth(
                     api_response.headers['Www-Authenticate'])
-                api_response = self._call_registry_api_tags_list()
+                api_response = self._call_registry_api_tags_list(page_url)
             else:
                 raise Exception("Authentication required" +
                                 ", but no authentication method provided !")
 
         if api_response.status_code == 200:
             content = json.loads(api_response.content.decode('utf-8'))
-            return content['tags']
+            tags = content['tags']
+            if 'next' in api_response.links:
+                next_url = api_response.links['next']['url']
+                next_tags = self._get_all_tags_from_registry(next_url)
+                tags += next_tags
+            return tags
         else:
             raise Exception(
                 "Docker registry api call failed, response code %d" %
                 api_response.status_code)
 
-    def _call_registry_api_tags_list(self) -> requests.Response:
-        docker_repo_url = 'https://%s/v2/%s/tags/list' % (self.config.repo,
-                                                          self.config.image)
+    def _call_registry_api_tags_list(self, page_url=None) -> requests.Response:
+        if page_url:
+            docker_repo_url = 'https://%s%s' % (self.config.repo, page_url)
+        else:
+            docker_repo_url = 'https://%s/v2/%s/tags/list' % (
+                self.config.repo, self.config.image)
         headers = {'Content-Type': 'application/json'}
 
         if self.auth_token:
