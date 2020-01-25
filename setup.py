@@ -29,6 +29,7 @@ setup(
         'Click==7.0',
         'www-authenticate==0.9.2',
         'python-dateutil==2.6.0',
+        'beautifulsoup4==4.8.2',
         'prometheus_client==0.7.0',
     ],
     classifiers=[

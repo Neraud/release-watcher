@@ -9,9 +9,12 @@ from release_watcher.watchers.gitlab_tag_watcher \
     import GithubTagWatcherType
 from release_watcher.watchers.pypi_watcher \
     import PyPIWatcherType
+from release_watcher.watchers.raw_html_watcher \
+    import RawHtmlWatcherType
 
 register_watcher_type(DockerRegistryWatcherType())
 register_watcher_type(GithubCommitWatcherType())
 register_watcher_type(GithubReleaseWatcherType())
 register_watcher_type(GithubTagWatcherType())
 register_watcher_type(PyPIWatcherType())
+register_watcher_type(RawHtmlWatcherType())
