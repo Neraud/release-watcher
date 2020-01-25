@@ -23,6 +23,7 @@ Release Watcher currently supports :
 * Github tag : watches for a new tag in a Github repository
 * Github commit : watches for new commits in a Github repository
 * Python Package Index (PyPI) : watches for new releases
+* Raw HTML page : extracts items from a web page (for example a gogs repo)
 
 ## Outputs
 

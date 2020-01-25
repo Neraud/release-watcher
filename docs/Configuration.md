@@ -209,6 +209,73 @@ You can watch for releases of a PyPI package.
 In the example above, we are watching new releases of the `PyYAML` package.
 We only want to consider versions `5.*` and ignore betas (exclude `.*[ab] [1-9]$`)
 
+
+### Raw HTML
+
+You can watch for items in an HTML page.
+
+This watcher requires css selectors configured to be able to extract the items in the page, and find their id and date.
+
+This method is probably the most unstable one, as a skin change on the page might break the whole whatcher.
+
+Using other watchers, when applicable, is preferred.
+
+```yaml
+- name: Gogs
+  type: raw_html
+  page_url: https://try.gogs.io/gogs/gogs/commits/master
+  id: 6bd08a0b6f
+  container_selector: "#commits-table"
+  item_selector: "tbody tr"
+  id_selector: "[class~=sha]"
+  id_attribute: ""
+  date_selector: "[class~=time-since]"
+  date_attribute: "title"
+  reverse: False
+  basic_auth:
+    username: your_username
+    password: your_password
+```
+
+* `name`: optional name for the watcher. Defaults to `[page_url]`
+* `page_url`: the page URL
+* `id`: the current id
+
+Selectors are used with [Beautiful Soup select()](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#css-selectors) method to find the items in the HTML
+
+* `container_selector`: optional selector of an element that contains the list of items to analyze.
+
+Empty by default : the whole page is searched.
+
+If provided, items are looked inside the first found container.
+
+
+* `item_selector` : selector used to find items
+* `id_selector` : selector of the id of an item. The first matching element is used.
+* `id_attribute` : optional attribute used to extract the id value from the id element.
+
+Empty by default : the text content of the item element will be used (`<span>item-id<span>`)
+
+If provided, will used the attribute on the item element (`<span sha="item-id"><span>`)
+
+* `date_selector` : selector of the date of an item. The first matching element is used.
+* `date_attribute` : optional attribute used to extract the date value from the date element.
+
+Empty by default : the text content of the item element will be used (`<span>date<span>`)
+
+If provided, will used the attribute on the item element (`<span release-date="date"><span>`)
+
+* `reverse` : False by default, the list of items has newer items first.
+
+Set it to true if new items are last.
+
+As this watcher doesn't handle pagination, it will only consider items displayed on the page !
+
+* `basic_auth` : optional basic authentication settings
+
+In the example above, we are watching new commits on the Gogs repository hosted on `try.gogs.io`.
+
+
 ## Outputs
 
 Once new releases have been found, you need to save the output.
