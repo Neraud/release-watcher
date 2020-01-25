@@ -58,3 +58,16 @@ results:
     date: '2019-07-24 00:01:59+00:00'
     name: dd618219f7d4066eb89d1fdadbbf23f005012816
   type: github_commit
+- currentRelease: 6bd08a0b6f
+  currentReleaseDate: 2020-01-21 13:11:00+00:00
+  missedReleaseCount: 2
+  missedReleases:
+  - date: '2020-01-22 18:22:30+00:00'
+    name: 91e9495148
+  - date: '2020-01-22 18:05:31+00:00'
+    name: 873966aa86
+  name: TestGogs
+  newestRelease:
+    date: '2020-01-22 18:22:30+00:00'
+    name: 91e9495148
+  type: raw_html

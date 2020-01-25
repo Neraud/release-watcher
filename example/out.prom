@@ -5,3 +5,4 @@ missed_releases{name="PyYAML PyPI"} 1.0
 missed_releases{name="PyYAML Repo"} 2.0
 missed_releases{name="DateUtil"} 1.0
 missed_releases{name="PythonDockerSource"} 2.0
+missed_releases{name="TestGogs"} 2.0

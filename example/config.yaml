@@ -25,10 +25,24 @@ sources:
         type: pypi
         package: PyYAML
         version: 5.1
-        includes: 
+        includes:
           - 5\..*
-        excludes: 
+        excludes:
           - .*[ab][1-9]$
+      - name: TestGogs
+        type: raw_html
+        page_url: https://try.gogs.io/gogs/gogs/commits/master
+        id: 6bd08a0b6f
+        container_selector: "#commits-table"
+        item_selector: "tbody tr"
+        id_selector: "[class~=sha]"
+        id_attribute: ""
+        date_selector: "[class~=time-since]"
+        date_attribute: "title"
+        reverse: False
+        basic_auth:
+          username: your_username
+          password: your_username
   - type: file
     path: github_watchers.yaml
 
