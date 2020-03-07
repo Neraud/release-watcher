@@ -152,7 +152,25 @@ class DockerRegistryWatcher(Watcher):
         if self.auth_token:
             headers['Authorization'] = 'Bearer %s' % self.auth_token
 
-        response = requests.get(docker_repo_url, headers=headers)
+        # It seems the dockerhub api sometimes returns a partial content
+        # Retries up to 5 times to work around the issue
+        retry = 0
+        get_tag_date_error = None
+
+        while retry < 5:
+            try:
+                return self._get_tag_date_try(docker_repo_url, headers)
+            except json.decoder.JSONDecodeError as err:
+                get_tag_date_error = err
+                retry += 1
+                logger.warning(
+                    "Error fetching date for '%s:%s' (try # %d) : %s" % (
+                        self.config.name, tag, retry, err))
+
+        raise WatchError("Error retrieving tag date : %s" % get_tag_date_error)
+
+    def _get_tag_date_try(self, repo_url: str, headers: Dict) -> datetime:
+        response = requests.get(repo_url, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
 
