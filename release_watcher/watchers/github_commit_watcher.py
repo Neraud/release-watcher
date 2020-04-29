@@ -1,28 +1,27 @@
 import logging
 import json
-import requests
 import dateutil.parser
 from typing import Dict, Sequence
 from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
     import Watcher, WatcherConfig, WatcherType
+from release_watcher.watchers.base_github_watcher \
+    import BaseGithubWatcher, BaseGithubConfig
 
 logger = logging.getLogger(__name__)
 
 WATCHER_TYPE_NAME = 'github_commit'
 
 
-class GithubCommitWatcherConfig(WatcherConfig):
+class GithubCommitWatcherConfig(BaseGithubConfig):
     """Class to store the configuration for a GithubCommitWatcher"""
 
-    repo: str = None
     branch: str = None
     commit: str = None
 
     def __init__(self, name: str, repo: str, branch: str, commit: str):
-        super().__init__(WATCHER_TYPE_NAME, name)
-        self.repo = repo
+        super().__init__(WATCHER_TYPE_NAME, name, repo)
         self.branch = branch
         self.commit = commit
 
@@ -30,7 +29,7 @@ class GithubCommitWatcherConfig(WatcherConfig):
         return '%s:%s' % (self.repo, self.branch)
 
 
-class GithubCommitWatcher(Watcher):
+class GithubCommitWatcher(BaseGithubWatcher):
     """Implementation of a Watcher that checks for new commits in a GitHub
     repository"""
 
@@ -39,7 +38,8 @@ class GithubCommitWatcher(Watcher):
 
     def _do_watch(self) -> WatchResult:
         logger.debug("Watching Github commit %s" % self.config)
-        response = self._call_github_api()
+        api_url = 'commits?sha=%s' % self.config.branch
+        response = self._call_github_api(api_url)
         current_commit_hash = self.config.commit
         current_commit_release = None
         missed_commits = []
@@ -65,19 +65,6 @@ class GithubCommitWatcher(Watcher):
 
         logger.debug('Missed commits : %s', missed_commits)
         return WatchResult(self.config, current_commit_release, missed_commits)
-
-    def _call_github_api(self) -> Sequence[Dict]:
-        github_repo_url = 'https://api.github.com/repos/%s/commits?sha=%s'\
-            % (self.config.repo, self.config.branch)
-        headers = {'Content-Type': 'application/json'}
-        response = requests.get(github_repo_url, headers=headers)
-
-        if response.status_code == 200:
-            return json.loads(response.content.decode('utf-8'))
-        else:
-            logger.debug('Github api call failed : code = %s, content = %s' %
-                         (response.status_code, response.content))
-            raise WatchError("Github api call failed : %s" % response)
 
 
 class GithubCommitWatcherType(WatcherType):

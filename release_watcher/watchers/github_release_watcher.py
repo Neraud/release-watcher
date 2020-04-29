@@ -1,31 +1,30 @@
 import logging
 import json
 import re
-import requests
 import dateutil.parser
 from typing import Dict, Sequence
 from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
     import Watcher, WatcherConfig, WatcherType
+from release_watcher.watchers.base_github_watcher \
+    import BaseGithubWatcher, BaseGithubConfig
 
 logger = logging.getLogger(__name__)
 
 WATCHER_TYPE_NAME = 'github_release'
 
 
-class GithubReleaseWatcherConfig(WatcherConfig):
+class GithubReleaseWatcherConfig(BaseGithubConfig):
     """Class to store the configuration for a GithubReleaseWatcher"""
 
-    repo: str = None
     release: str = None
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
 
     def __init__(self, name: str, repo: str, release: str,
                  includes: Sequence[str], excludes: Sequence[str]):
-        super().__init__(WATCHER_TYPE_NAME, name)
-        self.repo = repo
+        super().__init__(WATCHER_TYPE_NAME, name, repo)
         self.release = release
         self.includes = includes
         self.excludes = excludes
@@ -34,7 +33,7 @@ class GithubReleaseWatcherConfig(WatcherConfig):
         return '%s:%s' % (self.repo, self.release)
 
 
-class GithubReleaseWatcher(Watcher):
+class GithubReleaseWatcher(BaseGithubWatcher):
     """Implementation of a Watcher that checks for new releases in a GitHub
     repository"""
 
@@ -43,7 +42,7 @@ class GithubReleaseWatcher(Watcher):
 
     def _do_watch(self) -> WatchResult:
         logger.debug("Watching Github release %s" % self.config)
-        response = self._fetch_github_releases()
+        response = self._call_github_api('releases')
         current_release_name = self.config.release
         current_release = None
         missed_releases = []
@@ -81,19 +80,6 @@ class GithubReleaseWatcher(Watcher):
 
         logger.debug('Missed releases : %s', missed_releases)
         return WatchResult(self.config, current_release, missed_releases)
-
-    def _fetch_github_releases(self) -> Sequence[Dict]:
-        github_repo_url = 'https://api.github.com/repos/%s/releases' % \
-            self.config.repo
-        headers = {'Content-Type': 'application/json'}
-        response = requests.get(github_repo_url, headers=headers)
-
-        if response.status_code == 200:
-            return json.loads(response.content.decode('utf-8'))
-        else:
-            logger.debug('Github api call failed : code = %s, content = %s' %
-                         (response.status_code, response.content))
-            raise WatchError("Github api call failed : %s" % response)
 
 
 class GithubReleaseWatcherType(WatcherType):

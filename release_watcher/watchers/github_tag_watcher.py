@@ -1,7 +1,6 @@
 import logging
 import json
 import re
-import requests
 import dateutil.parser
 import datetime
 from typing import Dict, Sequence
@@ -9,24 +8,24 @@ from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
     import Watcher, WatcherConfig, WatcherType
+from release_watcher.watchers.base_github_watcher \
+    import BaseGithubWatcher, BaseGithubConfig
 
 logger = logging.getLogger(__name__)
 
 WATCHER_TYPE_NAME = 'github_tag'
 
 
-class GithubTagWatcherConfig(WatcherConfig):
+class GithubTagWatcherConfig(BaseGithubConfig):
     """Class to store the configuration for a GithubTagWatcher"""
 
-    repo: str = None
     tag: str = None
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
 
     def __init__(self, name: str, repo: str, tag: str, includes: Sequence[str],
                  excludes: Sequence[str]):
-        super().__init__(WATCHER_TYPE_NAME, name)
-        self.repo = repo
+        super().__init__(WATCHER_TYPE_NAME, name, repo)
         self.tag = tag
         self.includes = includes
         self.excludes = excludes
@@ -35,7 +34,7 @@ class GithubTagWatcherConfig(WatcherConfig):
         return '%s:%s' % (self.repo, self.tag)
 
 
-class GithubTagWatcher(Watcher):
+class GithubTagWatcher(BaseGithubWatcher):
     """Implementation of a Watcher that checks for new tags in a GitHub
     repository"""
 
@@ -44,7 +43,8 @@ class GithubTagWatcher(Watcher):
 
     def _do_watch(self) -> WatchResult:
         logger.debug("Watching Github tag %s" % self.config)
-        response = self._fetch_github_tags()
+        response = self._call_github_api('tags')
+
         current_tag_name = self.config.tag
         current_tag = None
         missed_tags = []
@@ -65,7 +65,10 @@ class GithubTagWatcher(Watcher):
             new_tag_name = tag['name']
             logger.debug(" - %s" % new_tag_name)
 
-            new_tag_date = self._fetch_tag_date(tag)
+            commit_url = tag['commit']['url']
+            commit = self._call_github_api(commit_url)
+            new_tag_date_string = commit['commit']['committer']['date']
+            new_tag_date = dateutil.parser.parse(new_tag_date_string)
             new_tag = Release(new_tag_name, new_tag_date)
 
             if new_tag_name == current_tag_name:
@@ -80,32 +83,6 @@ class GithubTagWatcher(Watcher):
 
         logger.debug('Missed tags : %s', missed_tags)
         return WatchResult(self.config, current_tag, missed_tags)
-
-    def _fetch_github_tags(self) -> Sequence[Dict]:
-        github_repo_url = 'https://api.github.com/repos/%s/tags' % \
-            self.config.repo
-        headers = {'Content-Type': 'application/json'}
-        response = requests.get(github_repo_url, headers=headers)
-
-        if response.status_code == 200:
-            return json.loads(response.content.decode('utf-8'))
-        else:
-            logger.debug('Github api call failed : code = %s, content = %s' %
-                         (response.status_code, response.content))
-            raise WatchError("Github api call failed : %s" % response)
-
-    def _fetch_tag_date(self, tag_response: str) -> datetime:
-        commit_url = tag_response['commit']['url']
-        headers = {'Content-Type': 'application/json'}
-        response = requests.get(commit_url, headers=headers)
-
-        if response.status_code == 200:
-            commit = json.loads(response.content.decode('utf-8'))
-            return dateutil.parser.parse(commit['commit']['committer']['date'])
-        else:
-            logger.debug('Github api call failed : code = %s, content = %s' %
-                         (response.status_code, response.content))
-            raise WatchError("Github api call failed : %s" % response)
 
 
 class GithubTagWatcherType(WatcherType):
