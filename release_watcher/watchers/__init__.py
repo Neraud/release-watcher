@@ -1,11 +1,11 @@
 from release_watcher.watchers.watcher_manager import register_watcher_type
 from release_watcher.watchers.docker_registry_watcher \
     import DockerRegistryWatcherType
-from release_watcher.watchers.gitlab_commit_watcher \
+from release_watcher.watchers.github_commit_watcher \
     import GithubCommitWatcherType
-from release_watcher.watchers.gitlab_release_watcher \
+from release_watcher.watchers.github_release_watcher \
     import GithubReleaseWatcherType
-from release_watcher.watchers.gitlab_tag_watcher \
+from release_watcher.watchers.github_tag_watcher \
     import GithubTagWatcherType
 from release_watcher.watchers.pypi_watcher \
     import PyPIWatcherType
