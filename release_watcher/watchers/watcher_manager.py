@@ -56,7 +56,8 @@ class WatcherType(metaclass=abc.ABCMeta):
         self.name = name
 
     @abc.abstractmethod
-    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) -> WatcherConfig:
+    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) \
+            -> WatcherConfig:
         """Parses the raw configuration from the user and returns a
         WatcherConfig instance"""
         pass

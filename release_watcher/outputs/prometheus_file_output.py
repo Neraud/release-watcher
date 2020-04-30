@@ -1,8 +1,9 @@
 import logging
 from typing import Dict, Sequence
-from prometheus_client import CollectorRegistry, Gauge, write_to_textfile
+from prometheus_client import CollectorRegistry, write_to_textfile
+from release_watcher.outputs.base_prometheus_output import BasePrometheusOutput
 from release_watcher.outputs.output_manager \
-    import Output, OutputConfig, OutputType
+    import OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -26,11 +27,8 @@ class PrometheusFileOutputConfig(OutputConfig):
         return 'PrometheusFileOutputConfig(%s)' % self
 
 
-class PrometheusFileOutput(Output):
+class PrometheusFileOutput(BasePrometheusOutput):
     """Implementation of an Output that exposes Prometheus metrics"""
-
-    registry: CollectorRegistry = None
-    missed_releases_gauge: Gauge = None
 
     def __init__(self, config: PrometheusFileOutputConfig):
         super().__init__(config)
@@ -42,16 +40,7 @@ class PrometheusFileOutput(Output):
             logger.debug("Initializing registry")
             self.registry = CollectorRegistry()
 
-        if not self.missed_releases_gauge:
-            logger.debug("Initializing missed_releases_gauge")
-            self.missed_releases_gauge = Gauge('missed_releases',
-                                               'Number of missed releases',
-                                               ['name'],
-                                               registry=self.registry)
-
-        for result in results:
-            self.missed_releases_gauge.labels(str(result.config.name)).set(
-                len(result.missed_releases))
+        self._outputMetrics(results)
 
         write_to_textfile(self.config.path, self.registry)
 

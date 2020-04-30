@@ -1,8 +1,9 @@
 import logging
 from typing import Dict, Sequence
-from prometheus_client import Gauge, start_http_server
+from prometheus_client import start_http_server
+from release_watcher.outputs.base_prometheus_output import BasePrometheusOutput
 from release_watcher.outputs.output_manager \
-    import Output, OutputConfig, OutputType
+    import OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -26,11 +27,10 @@ class PrometheusHttpOutputConfig(OutputConfig):
         return 'PrometheusHttpOutputConfig(%s)' % self
 
 
-class PrometheusHttpOutput(Output):
+class PrometheusHttpOutput(BasePrometheusOutput):
     """Implementation of an Output that exposes Prometheus metrics"""
 
     server_started: bool = False
-    missed_releases_gauge: Gauge = None
 
     def __init__(self, config: PrometheusHttpOutputConfig):
         super().__init__(config)
@@ -44,15 +44,7 @@ class PrometheusHttpOutput(Output):
             start_http_server(self.config.port)
             self.server_started = True
 
-        if not self.missed_releases_gauge:
-            logger.debug("Initializing missed_releases_gauge")
-            self.missed_releases_gauge = Gauge('missed_releases',
-                                               'Number of missed releases',
-                                               ['name'])
-
-        for result in results:
-            self.missed_releases_gauge.labels(str(result.config.name)).set(
-                len(result.missed_releases))
+        self._outputMetrics(results)
 
 
 class PrometheusHttpOutputType(OutputType):

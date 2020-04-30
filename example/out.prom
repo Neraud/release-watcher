@@ -1,8 +1,16 @@
-# HELP missed_releases Number of missed releases
-# TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 1.0
-missed_releases{name="PyYAML PyPI"} 1.0
-missed_releases{name="PyYAML Repo"} 2.0
-missed_releases{name="DateUtil"} 1.0
-missed_releases{name="PythonDockerSource"} 2.0
-missed_releases{name="TestGogs"} 2.0
+# HELP releasewatcher_new_releases_total Number of new releases
+# TYPE releasewatcher_new_releases_total gauge
+releasewatcher_new_releases_total{name="PythonAlpineImage",type="docker_registry"} 1.0
+releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
+releasewatcher_new_releases_total{name="TestGogs",type="raw_html"} 3.0
+releasewatcher_new_releases_total{name="PyYAML Repo",type="github_tag"} 2.0
+releasewatcher_new_releases_total{name="DateUtil",type="github_release"} 1.0
+releasewatcher_new_releases_total{name="PythonDockerSource",type="github_commit"} 1.0
+# HELP releasewatcher_release_age_seconds Age of the current release
+# TYPE releasewatcher_release_age_seconds gauge
+releasewatcher_release_age_seconds{name="PythonAlpineImage",type="docker_registry"} 7.328950102015e+06
+releasewatcher_release_age_seconds{name="PyYAML PyPI",type="pypi"} 1.2966642248931e+07
+releasewatcher_release_age_seconds{name="TestGogs",type="raw_html"} 1.040000248949e+06
+releasewatcher_release_age_seconds{name="PyYAML Repo",type="github_tag"} 1.2964369248963e+07
+releasewatcher_release_age_seconds{name="DateUtil",type="github_release"} 1.09662938248978e+08
+releasewatcher_release_age_seconds{name="PythonDockerSource",type="github_commit"} 167293.248992

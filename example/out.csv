@@ -1,7 +1,7 @@
 Type,Name,Current release,Current release date,Missed releases,Newest release,Newest release date
-docker_registry,PythonAlpineImage,3.7.2-alpine3.8,2019-03-07 22:47:31.896533+00:00,1,3.7.3-alpine3.8,2019-05-08 00:13:13.242555+00:00
-pypi,PyYAML PyPI,5.1,2019-03-13 16:35:30,1,5.1.1,2019-06-06 22:31:02
-github_tag,PyYAML Repo,4.1,2018-06-26 22:08:15+00:00,2,5.1.1,2019-06-06 22:14:10+00:00
+docker_registry,PythonAlpineImage,3.8.1-alpine3.11,2020-02-06 01:37:03.146884+00:00,1,3.8.2-alpine3.11,2020-04-29 17:38:10.323158+00:00
+pypi,PyYAML PyPI,5.2,2019-12-02 21:35:31,2,5.3.1,2020-03-18 21:41:00
+raw_html,TestGogs,5a52ee75e3,2020-04-18 20:32:53+00:00,3,dbe373af6f,2020-04-25 01:57:13+00:00
+github_tag,PyYAML Repo,5.2,2019-12-02 20:13:24+00:00,2,5.3.1,2020-03-18 21:09:19+00:00
 github_release,DateUtil,2.6.0,2016-11-08 15:30:35+00:00,1,2.6.1,2017-07-10 18:39:55+00:00
-github_commit,PythonDockerSource,13ae0c0b3bf09ad3cf2f75f5e9a4ab2415a4b109,2019-07-11 20:17:03+00:00,2,dd618219f7d4066eb89d1fdadbbf23f005012816,2019-07-24 00:01:59+00:00
-raw_html,TestGogs,6bd08a0b6f,2020-01-21 13:11:00+00:00,2,91e9495148,2020-01-22 18:22:30+00:00
+github_commit,PythonDockerSource,0fed666cbe3b7ed7d59d71f483799a0d6ed909aa,2020-04-28 22:58:00+00:00,1,6ceac803dd9c260a2c530543f0806796183715c0,2020-04-29 16:31:55+00:00

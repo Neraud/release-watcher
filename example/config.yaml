@@ -21,16 +21,17 @@ sources:
         type: docker_registry
         repo: registry-1.docker.io
         image: python
-        tag: 3.7.2-alpine3.8
+        tag: 3.8.1-alpine3.11
         includes:
-          - 3\.[7-9]\.[0-9]+-alpine3\.8
+          - 3\.[0-9]+\.[0-9]+-alpine3\.11
         excludes:
           - .*rc[0-9]*-.*
           - .*[ab][1-9]-.*
+          - 3\.[0-7]\..*
       - name: PyYAML PyPI
         type: pypi
         package: PyYAML
-        version: 5.1
+        version: 5.2
         includes:
           - 5\..*
         excludes:
@@ -38,7 +39,7 @@ sources:
       - name: TestGogs
         type: raw_html
         page_url: https://try.gogs.io/gogs/gogs/commits/master
-        id: 6bd08a0b6f
+        id: 5a52ee75e3
         container_selector: "#commits-table"
         item_selector: "tbody tr"
         id_selector: "[class~=sha]"
@@ -48,7 +49,7 @@ sources:
         reverse: False
         basic_auth:
           username: your_username
-          password: your_username
+          password: your_password
   - type: file
     path: github_watchers.yaml
 

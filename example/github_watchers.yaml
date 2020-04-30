@@ -2,7 +2,7 @@ watchers:
   - name: PyYAML Repo
     type: github_tag
     repo: yaml/pyyaml
-    tag: 4.1
+    tag: 5.2
     #username: name
     #password: password or pat
     rate_limit_wait_max: 120
@@ -21,7 +21,7 @@ watchers:
     type: github_commit
     repo: docker-library/python
     branch: master
-    commit: 13ae0c0b3bf09ad3cf2f75f5e9a4ab2415a4b109
+    commit: 0fed666cbe3b7ed7d59d71f483799a0d6ed909aa
     #username: name
     #password: password or pat
     rate_limit_wait_max: 120

@@ -34,9 +34,9 @@ core:
 
 Watchers are executed in a thread pool with `threads` threads.
 
-With `runMode: once` (default), the programm simply exits once the results are written to the outputs.
+With `runMode: once` (default), the program simply exits once the results are written to the outputs.
 
-Using `runMode: repeat`, the program never stops (untill interrupted) and sleeps for `sleepDuration` between each execution.
+Using `runMode: repeat`, the program never stops (until interrupted) and sleeps for `sleepDuration` between each execution.
 
 ## Common
 
@@ -50,7 +50,7 @@ common:
   github:
 ```
 
-### Github
+### GitHub
 
 ```yaml
 common:
@@ -62,11 +62,11 @@ common:
 
 These settings are applied by default on `github_release`, `github_tag` and `github_commit` watchers.
 
-* `username` : username to access the github API
-* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
-* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+* `username` : username to access the GitHub API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access GitHub API
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exceeded
 
-When authenticated, Github has a much high [rate limit](https://developer.github.com/v3/#rate-limiting).
+When authenticated, GitHub has a much high [rate limit](https://developer.github.com/v3/#rate-limiting).
 
 ## Sources
 
@@ -94,7 +94,7 @@ sources:
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
-The external file has the same structure as the `watchers` subelement :
+The external file has the same structure as the `watchers` sub element :
 
 ```yaml
 watchers:
@@ -162,9 +162,9 @@ You can watch for a release in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `release`: the currently used release (based on the release tag name)
-* `username` : username to access the github API
-* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
-* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+* `username` : username to access the GitHub API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access GitHub API
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exceeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
 
@@ -194,9 +194,9 @@ You can watch for a tag in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `tag`: the currently used tag
-* `username` : username to access the github API
-* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
-* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+* `username` : username to access the GitHub API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access GitHub API
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exceeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
 
@@ -226,9 +226,9 @@ You can watch for commits in a GitHub repository.
 * `repo`: the repository name
 * `branch`: the branch to scan
 * `commit`: the current commit hash
-* `username` : username to access the github API
-* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
-* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+* `username` : username to access the GitHub API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access GitHub API
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exceeded
 
 In the example above, we are watching new tags on the `docker-library/python` repository on GitHub.
 
@@ -243,9 +243,9 @@ You can watch for releases of a PyPI package.
   type: pypi
   package: PyYAML
   version: 5.1.0
-  includes: 
+  includes:
     - 5\..*
-  excludes: 
+  excludes:
     - .*[ab][1-9]$
 ```
 
@@ -258,14 +258,13 @@ You can watch for releases of a PyPI package.
 In the example above, we are watching new releases of the `PyYAML` package.
 We only want to consider versions `5.*` and ignore betas (exclude `.*[ab] [1-9]$`)
 
-
 ### Raw HTML
 
 You can watch for items in an HTML page.
 
 This watcher requires css selectors configured to be able to extract the items in the page, and find their id and date.
 
-This method is probably the most unstable one, as a skin change on the page might break the whole whatcher.
+This method is probably the most unstable one, as a skin change on the page might break the whole watcher.
 
 Using other watchers, when applicable, is preferred.
 
@@ -292,12 +291,11 @@ Using other watchers, when applicable, is preferred.
 
 Selectors are used with [Beautiful Soup select()](https://www.crummy.com/software/BeautifulSoup/bs4/doc/#css-selectors) method to find the items in the HTML
 
-* `container_selector`: optional selector of an element that contains the list of items to analyze.
+* `container_selector`: optional selector of an element that contains the list of items to analyse.
 
 Empty by default : the whole page is searched.
 
 If provided, items are looked inside the first found container.
-
 
 * `item_selector` : selector used to find items
 * `id_selector` : selector of the id of an item. The first matching element is used.
@@ -323,7 +321,6 @@ As this watcher doesn't handle pagination, it will only consider items displayed
 * `basic_auth` : optional basic authentication settings
 
 In the example above, we are watching new commits on the Gogs repository hosted on `try.gogs.io`.
-
 
 ## Outputs
 
@@ -392,8 +389,8 @@ You can export the outputs to a CSV file.
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
-* `displayUpToDate` (optionnal, default `yes`): if set to `no`, only watchers with new releases will be listed
-* `displayHeaders` (optionnal, default `yes`): if set to `no`, the header line is skipped
+* `displayUpToDate` (optional, default `yes`): if set to `no`, only watchers with new releases will be listed
+* `displayHeaders` (optional, default `yes`): if set to `no`, the header line is skipped
 
 The generated file will contain 1 row for each result, with the following columns :
 
@@ -425,16 +422,25 @@ You can export the outputs to a Prometheus file.
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
-A single gauge is written : `missed_releases`, and it counts the number of missed releases.
+The exported metrics are :
 
-If has a `name` label which is the watcher name.
+* `releasewatcher_new_releases_total` : the number of missed releases
+* `releasewatcher_release_age_seconds` : the age (in seconds) of the current release
+  * this metric doesn't handle time zones well, so it should be used at the days scope to make sense
+  * if the current release is not found (too old to be on the first 'page' of results), it will be set to `+Inf`
+
+These metrics have the following labels :
+
+* `name` : the watcher name
+* `type` : the watcher type
 
 For example :
 
 ```go
-# HELP missed_releases Number of missed releases
-# TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 2.0
+# HELP releasewatcher_new_releases_total Number of new releases
+# TYPE releasewatcher_new_releases_total gauge
+releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
+releasewatcher_release_age_seconds{name="PyYAML PyPI",type="pypi"} +Inf
 ```
 
 ### Prometheus Http endpoint
@@ -448,20 +454,29 @@ You can expose the outputs on an HTTP endpoint to be scraped by a Prometheus ins
 
 * `port`: port to expose
 
-The metrics will be availble on <http://[host_ip]:[port]/>
+The metrics will be available on <http://[host_ip]:[port]/>
 
-A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
+The exported metrics are :
 
-If has a `name` label which is the watcher name.
+* `releasewatcher_new_releases_total` : the number of missed releases
+* `releasewatcher_release_age_seconds` : the age (in seconds) of the current release
+  * this metric doesn't handle time zones well, so it should be used at the days scope to make sense
+  * if the current release is not found (too old to be on the first *page* of results), it will be set to `+Inf`
+
+These metrics have the following labels :
+
+* `name` : the watcher name
+* `type` : the watcher type
 
 For example :
 
 ```go
 [many python standard metrics]
 
-# HELP missed_releases Number of missed releases
-# TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 2.0
+# HELP releasewatcher_new_releases_total Number of new releases
+# TYPE releasewatcher_new_releases_total gauge
+releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
+releasewatcher_release_age_seconds{name="PyYAML PyPI",type="pypi"} +Inf
 ```
 
 *Note* : this exporter only makes sense with `core.runMode` set to `repeat`.
