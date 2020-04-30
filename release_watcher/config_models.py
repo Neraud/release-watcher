@@ -1,6 +1,5 @@
 from typing import Sequence
-from release_watcher.sources import source_manager
-from release_watcher.outputs import output_manager
+from release_watcher.base_models import SourceConfig, OutputConfig
 
 
 class LoggerConfig:
@@ -34,8 +33,8 @@ class GlobalConfig:
     """Model representing the main configuration"""
 
     core: CoreConfig = None
-    sources: Sequence[source_manager.SourceConfig] = []
-    outputs: Sequence[output_manager.OutputConfig] = []
+    sources: Sequence[SourceConfig] = []
+    outputs: Sequence[OutputConfig] = []
 
     def __init__(self):
         pass

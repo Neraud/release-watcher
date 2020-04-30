@@ -1,24 +1,12 @@
 import logging
 import abc
 from typing import Dict, Sequence
-
+from release_watcher.base_models import SourceConfig
 from release_watcher.watchers.watcher_manager import WatcherConfig
 
 logger = logging.getLogger(__name__)
 
 SOURCE_TYPES = {}
-
-
-class SourceConfig(metaclass=abc.ABCMeta):
-    """Base class to store the configuration for a Source"""
-
-    name: str = None
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
 
 
 class Source(metaclass=abc.ABCMeta):
