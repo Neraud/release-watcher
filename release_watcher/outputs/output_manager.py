@@ -1,23 +1,12 @@
 import logging
 import abc
 from typing import Dict, Sequence
+from release_watcher.base_models import OutputConfig
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
 
 OUTPUT_TYPES = {}
-
-
-class OutputConfig(metaclass=abc.ABCMeta):
-    """Base class to store the configuration for an Output"""
-
-    name: str = None
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
 
 
 class Output(metaclass=abc.ABCMeta):

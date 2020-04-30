@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Sequence
+from release_watcher.config_models import CommonConfig
 from release_watcher.sources.source_manager import SourceConfig, SourceType
 from release_watcher.sources.base_yaml_source_loader \
     import BaseYamlSourceLoader
@@ -26,8 +27,8 @@ class FileSourceConfig(SourceConfig):
 class FileSource(BaseYamlSourceLoader):
     """Implementation of an Source that reads from a YAML file"""
 
-    def __init__(self, config: FileSourceConfig):
-        super().__init__(config)
+    def __init__(self, common_config: CommonConfig, config: FileSourceConfig):
+        super().__init__(common_config, config)
 
     def read_watchers(self) -> Sequence[watcher_manager.WatcherConfig]:
         logger.debug("Reading watchers from file %s", self.config.path)
@@ -49,5 +50,6 @@ class FileSourceType(SourceType):
 
         return FileSourceConfig(path)
 
-    def create_source(self, config: FileSourceConfig) -> FileSource:
-        return FileSource(config)
+    def create_source(self, common_config: CommonConfig,
+                      config: FileSourceConfig) -> FileSource:
+        return FileSource(common_config, config)

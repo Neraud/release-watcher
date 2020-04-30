@@ -1,6 +1,5 @@
 from typing import Sequence
-from release_watcher.sources import source_manager
-from release_watcher.outputs import output_manager
+from release_watcher.base_models import SourceConfig, OutputConfig
 
 
 class LoggerConfig:
@@ -30,12 +29,27 @@ class CoreConfig:
         self.sleep_duration = sleep_duration
 
 
+class GithubConfig:
+    """Model representing the github configuration"""
+
+    username: str = None
+    password: str = None
+    rate_limit_wait_max: int = None
+
+
+class CommonConfig:
+    """Model representing common watchers configuration"""
+
+    github: GithubConfig = None
+
+
 class GlobalConfig:
     """Model representing the main configuration"""
 
     core: CoreConfig = None
-    sources: Sequence[source_manager.SourceConfig] = []
-    outputs: Sequence[output_manager.OutputConfig] = []
+    common: CommonConfig = None
+    sources: Sequence[SourceConfig] = []
+    outputs: Sequence[OutputConfig] = []
 
     def __init__(self):
         pass

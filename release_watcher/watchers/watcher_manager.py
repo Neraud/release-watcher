@@ -2,25 +2,13 @@ import logging
 import abc
 import time
 from typing import Dict
+from release_watcher.base_models import WatcherConfig
+from release_watcher.config_models import CommonConfig
 from release_watcher.watchers.watcher_models import WatchResult
 
 logger = logging.getLogger(__name__)
 
 WATCHER_TYPES = {}
-
-
-class WatcherConfig(metaclass=abc.ABCMeta):
-    """Base class to store the configuration for a Watcher"""
-
-    watcher_type_name: str = None
-    name: str = None
-
-    def __init__(self, watcher_type_name: str, name: str):
-        self.watcher_type_name = watcher_type_name
-        self.name = name
-
-    def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
 
 
 class Watcher(metaclass=abc.ABCMeta):
@@ -68,7 +56,7 @@ class WatcherType(metaclass=abc.ABCMeta):
         self.name = name
 
     @abc.abstractmethod
-    def parse_config(self, watcher_config: Dict) -> WatcherConfig:
+    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) -> WatcherConfig:
         """Parses the raw configuration from the user and returns a
         WatcherConfig instance"""
         pass
