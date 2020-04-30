@@ -17,6 +17,8 @@ class BaseGithubConfig(WatcherConfig):
     """Class to store the configuration for a BaseGithubWatcher"""
 
     repo: str = None
+    username: str = None
+    password: str = None
     rate_limit_wait_max: int
 
     def __init__(self, watcher_type_name: str, name: str, repo: str):
@@ -42,7 +44,12 @@ class BaseGithubWatcher(Watcher):
     def _do_call_api(self, github_url: str, headers: Dict) \
             -> Sequence[Dict]:
 
-        response = requests.get(github_url, headers=headers)
+        if self.config.username:
+            auth = (self.config.username, self.config.password)
+        else:
+            auth = None
+
+        response = requests.get(github_url, headers=headers, auth=auth)
 
         if response.status_code == 200:
             return json.loads(response.content.decode('utf-8'))

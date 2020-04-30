@@ -83,7 +83,10 @@ class GithubCommitWatcherType(WatcherType):
         rate_limit_wait_max = watcher_config.get('rate_limit_wait_max')
 
         config = GithubCommitWatcherConfig(name, repo, branch, commit)
-
+        config.username = watcher_config.get(
+            'username', common_config.github.username)
+        config.password = watcher_config.get(
+            'password', common_config.github.password)
         config.rate_limit_wait_max = watcher_config.get(
             'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
 

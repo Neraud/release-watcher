@@ -103,7 +103,10 @@ class GithubTagWatcherType(WatcherType):
         name = watcher_config.get('name', repo)
 
         config = GithubTagWatcherConfig(name, repo, tag, includes, excludes)
-
+        config.username = watcher_config.get(
+            'username', common_config.github.username)
+        config.password = watcher_config.get(
+            'password', common_config.github.password)
         config.rate_limit_wait_max = watcher_config.get(
             'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
 

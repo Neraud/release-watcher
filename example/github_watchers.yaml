@@ -3,6 +3,8 @@ watchers:
     type: github_tag
     repo: yaml/pyyaml
     tag: 4.1
+    #username: name
+    #password: password or pat
     rate_limit_wait_max: 120
     excludes:
       - .*[ab][1-9]$
@@ -10,6 +12,8 @@ watchers:
     type: github_release
     repo: dateutil/dateutil
     release: 2.6.0
+    #username: name
+    #password: password or pat
     rate_limit_wait_max: 120
     includes:
       - ^2\.6\.
@@ -18,4 +22,6 @@ watchers:
     repo: docker-library/python
     branch: master
     commit: 13ae0c0b3bf09ad3cf2f75f5e9a4ab2415a4b109
+    #username: name
+    #password: password or pat
     rate_limit_wait_max: 120

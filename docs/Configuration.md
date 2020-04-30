@@ -55,12 +55,18 @@ common:
 ```yaml
 common:
   github:
+    username: name
+    password: password or pat
     rate_limit_wait_max: 120
 ```
 
 These settings are applied by default on `github_release`, `github_tag` and `github_commit` watchers.
 
+* `username` : username to access the github API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
 * `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+
+When authenticated, Github has a much high [rate limit](https://developer.github.com/v3/#rate-limiting).
 
 ## Sources
 
@@ -146,6 +152,8 @@ You can watch for a release in a GitHub repository.
   type: github_release
   repo: dateutil/dateutil
   release: 2.6.0
+  username: name
+  password: password or pat
   rate_limit_wait_max: 120
   includes:
     - ^2\.6\.
@@ -154,6 +162,8 @@ You can watch for a release in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `release`: the currently used release (based on the release tag name)
+* `username` : username to access the github API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
 * `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
@@ -172,6 +182,8 @@ You can watch for a tag in a GitHub repository.
   type: github_tag
   repo: yaml/pyyaml
   tag: 4.1
+  username: name
+  password: password or pat
   rate_limit_wait_max: 120
   includes:
     - .*
@@ -182,6 +194,8 @@ You can watch for a tag in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `tag`: the currently used tag
+* `username` : username to access the github API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
 * `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
@@ -203,6 +217,8 @@ You can watch for commits in a GitHub repository.
   repo: docker-library/python
   branch: master
   commit: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
+  username: name
+  password: password or pat
   rate_limit_wait_max: 120
 ```
 
@@ -210,6 +226,8 @@ You can watch for commits in a GitHub repository.
 * `repo`: the repository name
 * `branch`: the branch to scan
 * `commit`: the current commit hash
+* `username` : username to access the github API
+* `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access github API
 * `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 
 In the example above, we are watching new tags on the `docker-library/python` repository on GitHub.

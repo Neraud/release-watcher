@@ -102,6 +102,10 @@ class GithubReleaseWatcherType(WatcherType):
         config = GithubReleaseWatcherConfig(
             name, repo, release, includes, excludes)
 
+        config.username = watcher_config.get(
+            'username', common_config.github.username)
+        config.password = watcher_config.get(
+            'password', common_config.github.password)
         config.rate_limit_wait_max = watcher_config.get(
             'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
 

@@ -32,6 +32,8 @@ class CoreConfig:
 class GithubConfig:
     """Model representing the github configuration"""
 
+    username: str = None
+    password: str = None
     rate_limit_wait_max: int = None
 
 

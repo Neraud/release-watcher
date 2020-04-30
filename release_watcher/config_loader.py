@@ -126,6 +126,9 @@ def _parse_github_conf(conf: Dict) -> GithubConfig:
     githug_conf = conf['common'].get('github', default_conf)
     github_config = GithubConfig()
 
+    github_config.username = githug_conf.get('username')
+    github_config.password = githug_conf.get('password')
+
     rate_limit_wait_max = githug_conf.get('rate_limit_wait_max',
                                           default_conf['rate_limit_wait_max'])
     if not isinstance(rate_limit_wait_max, int):
