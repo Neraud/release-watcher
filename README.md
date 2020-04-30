@@ -19,11 +19,11 @@ A watcher is a type of *thing* you want to watch for.
 Release Watcher currently supports :
 
 * Docker image : watches for new tags pushed on a docker v2 registry
-* Github release : watches for a new release in a Github repository
-* Github tag : watches for a new tag in a Github repository
-* Github commit : watches for new commits in a Github repository
+* GitHub release : watches for a new release in a GitHub repository
+* GitHub tag : watches for a new tag in a GitHub repository
+* GitHub commit : watches for new commits in a GitHub repository
 * Python Package Index (PyPI) : watches for new releases
-* Raw HTML page : extracts items from a web page (for example a gogs repo)
+* Raw HTML page : extracts items from a web page (for example a Gogs repo)
 
 ## Outputs
 
