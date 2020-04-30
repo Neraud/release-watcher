@@ -16,10 +16,15 @@ class BasePrometheusOutput(Output):
     def _outputMetrics(self, results: Sequence[watcher_models.WatchResult]):
         if not self.missed_releases_gauge:
             logger.debug("Initializing missed_releases_gauge")
-            self.missed_releases_gauge = Gauge('missed_releases',
-                                               'Number of missed releases',
-                                               ['name'],
-                                               registry=self.registry)
+            label_names = ['name', 'type']
+            self.missed_releases_gauge = Gauge(
+                'missed_releases', 'Number of missed releases',
+                label_names, registry=self.registry)
+
         for result in results:
-            self.missed_releases_gauge.labels(str(result.config.name)).set(
+            label_values = [
+                str(result.config.name),
+                result.config.watcher_type_name
+            ]
+            self.missed_releases_gauge.labels(*label_values).set(
                 len(result.missed_releases))

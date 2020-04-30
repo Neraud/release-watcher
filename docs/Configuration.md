@@ -427,14 +427,17 @@ If `path` doesn't start with a `/`, it is assumed to be relative to the main con
 
 A single gauge is written : `missed_releases`, and it counts the number of missed releases.
 
-If has a `name` label which is the watcher name.
+If has the following labels :
+
+* `name` : the watcher name
+* `type` : the watcher type
 
 For example :
 
 ```go
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 2.0
+missed_releases{name="PythonAlpineImage",type="pypi"} 2.0
 ```
 
 ### Prometheus Http endpoint
@@ -452,7 +455,10 @@ The metrics will be availble on <http://[host_ip]:[port]/>
 
 A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
 
-If has a `name` label which is the watcher name.
+If has the following labels :
+
+* `name` : the watcher name
+* `type` : the watcher type
 
 For example :
 
@@ -461,7 +467,7 @@ For example :
 
 # HELP missed_releases Number of missed releases
 # TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage"} 2.0
+missed_releases{name="PythonAlpineImage",type="pypi"} 2.0
 ```
 
 *Note* : this exporter only makes sense with `core.runMode` set to `repeat`.
