@@ -2,6 +2,7 @@ import logging
 import abc
 from typing import Dict, Sequence
 from release_watcher.base_models import SourceConfig
+from release_watcher.config_models import CommonConfig
 from release_watcher.watchers.watcher_manager import WatcherConfig
 
 logger = logging.getLogger(__name__)
@@ -13,12 +14,15 @@ class Source(metaclass=abc.ABCMeta):
     """Base class to implement a Source"""
 
     config: SourceConfig = None
+    common_config: CommonConfig = None
 
-    def __init__(self, config: SourceConfig):
+    def __init__(self, common_config: CommonConfig, config: SourceConfig):
+        self.common_config = common_config
         self.config = config
 
     @abc.abstractmethod
-    def read_watchers(self) -> Sequence[WatcherConfig]:
+    def read_watchers(self, common_config: CommonConfig) \
+            -> Sequence[WatcherConfig]:
         """Reads the watchers list from the source"""
         pass
 
@@ -45,7 +49,8 @@ class SourceType(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def create_source(self) -> Source:
+    def create_source(self, common_config: CommonConfig,
+                      config: SourceConfig) -> Source:
         """Creates the Source instance from a configuation"""
         pass
 

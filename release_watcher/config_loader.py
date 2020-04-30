@@ -5,8 +5,7 @@ from os import path
 from typing import Dict, Sequence
 from release_watcher.sources import source_manager
 from release_watcher.outputs import output_manager
-from release_watcher.config_models \
-    import GlobalConfig, LoggerConfig, CoreConfig
+from release_watcher.config_models import *
 
 try:
     from yaml import CLoader as Loader
@@ -72,6 +71,7 @@ def _init_logger(logger_conf: LoggerConfig):
 def _parse_conf(conf: Dict) -> GlobalConfig:
     config = GlobalConfig()
     config.core = _parse_core_conf(conf)
+    config.common = CommonConfig()
     config.sources = _parse_sources_conf(conf)
     if not config.sources:
         raise Exception('No valid source configuration found')

@@ -3,6 +3,7 @@ import logging
 import sys
 import time
 from release_watcher import config_loader
+from release_watcher.config_models import GlobalConfig
 from release_watcher.watcher_runner import WatcherRunner
 from release_watcher.sources import source_manager
 from release_watcher.watchers import watcher_manager
@@ -17,7 +18,7 @@ def main(config: str):
     """Entrypoint for the Release Watch application"""
 
     global_config = config_loader.load_conf(config)
-    watchers = _create_watchers(global_config.sources)
+    watchers = _create_watchers(global_config)
 
     if not watchers:
         logger.error("No configured watchers, nothing to do")
@@ -37,15 +38,15 @@ def main(config: str):
             time.sleep(global_config.core.sleep_duration)
 
 
-def _create_watchers(sources_conf: Sequence[Dict]
+def _create_watchers(global_config: GlobalConfig
                      ) -> Sequence[watcher_manager.Watcher]:
     logger.debug('Listing watchers from sources')
     watchers = []
-    for source_conf in sources_conf:
+    for source_conf in global_config.sources:
         logger.debug(' - Source : %s', source_conf.name)
         source_type = source_manager.get_source_type(source_conf.name)
         watchers_for_source = source_type.create_source(
-            source_conf).read_watchers()
+            global_config.common, source_conf).read_watchers()
         logger.debug(' -> %d watchers for %s', len(watchers_for_source),
                      source_conf.name)
         for watcher_config in watchers_for_source:

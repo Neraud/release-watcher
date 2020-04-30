@@ -51,6 +51,6 @@ class BaseYamlSourceLoader(Source):
         if 'type' in watcher_conf:
             watcher_type = watcher_manager.get_watcher_type(
                 watcher_conf['type'])
-            return watcher_type.parse_config(watcher_conf)
+            return watcher_type.parse_config(self.common_config, watcher_conf)
         else:
             raise ValueError('Missing type property on wather configuration')

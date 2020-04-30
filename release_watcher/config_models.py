@@ -29,10 +29,15 @@ class CoreConfig:
         self.sleep_duration = sleep_duration
 
 
+class CommonConfig:
+    """Model representing common watchers configuration"""
+
+
 class GlobalConfig:
     """Model representing the main configuration"""
 
     core: CoreConfig = None
+    common: CommonConfig = None
     sources: Sequence[SourceConfig] = []
     outputs: Sequence[OutputConfig] = []
 

@@ -5,6 +5,8 @@ import re
 import dateutil.parser
 import datetime
 from typing import Dict, Sequence
+from release_watcher.config_models \
+    import CommonConfig
 from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
@@ -113,7 +115,8 @@ class PyPIWatcherType(WatcherType):
     def __init__(self):
         super().__init__(WATCHER_TYPE_NAME)
 
-    def parse_config(self, watcher_config: Dict) -> PyPIWatcherConfig:
+    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) \
+            -> PyPIWatcherConfig:
         package = watcher_config['package']
         version = str(watcher_config['version'])
         includes = watcher_config.get('includes', [])

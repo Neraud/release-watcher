@@ -4,6 +4,8 @@ import re
 import dateutil.parser
 import datetime
 from typing import Dict, Sequence
+from release_watcher.config_models \
+    import CommonConfig
 from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
@@ -91,7 +93,8 @@ class GithubTagWatcherType(WatcherType):
     def __init__(self):
         super().__init__(WATCHER_TYPE_NAME)
 
-    def parse_config(self, watcher_config) -> GithubTagWatcherConfig:
+    def parse_config(self, common_config: CommonConfig, watcher_config) \
+            -> GithubTagWatcherConfig:
         repo = watcher_config['repo']
         tag = str(watcher_config['tag'])
 

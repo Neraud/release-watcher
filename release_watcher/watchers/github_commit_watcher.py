@@ -2,6 +2,8 @@ import logging
 import json
 import dateutil.parser
 from typing import Dict, Sequence
+from release_watcher.config_models \
+    import CommonConfig
 from release_watcher.watchers.watcher_models \
     import Release, WatchError, WatchResult
 from release_watcher.watchers.watcher_manager \
@@ -73,7 +75,7 @@ class GithubCommitWatcherType(WatcherType):
     def __init__(self):
         super().__init__(WATCHER_TYPE_NAME)
 
-    def parse_config(self, watcher_config: Dict):
+    def parse_config(self, common_config: CommonConfig, watcher_config: Dict):
         repo = watcher_config['repo']
         branch = watcher_config['branch']
         commit = str(watcher_config['commit'])
