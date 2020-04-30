@@ -99,8 +99,13 @@ class GithubReleaseWatcherType(WatcherType):
         excludes = watcher_config.get('excludes', [])
         name = watcher_config.get('name', repo)
 
-        return GithubReleaseWatcherConfig(name, repo, release, includes,
-                                          excludes)
+        config = GithubReleaseWatcherConfig(
+            name, repo, release, includes, excludes)
+
+        config.rate_limit_wait_max = watcher_config.get(
+            'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
+
+        return config
 
     def create_watcher(self, watcher_config: GithubReleaseWatcherConfig
                        ) -> GithubReleaseWatcher:

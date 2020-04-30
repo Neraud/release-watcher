@@ -17,7 +17,7 @@ class BaseGithubConfig(WatcherConfig):
     """Class to store the configuration for a BaseGithubWatcher"""
 
     repo: str = None
-    rate_limit_wait_max: int = 120
+    rate_limit_wait_max: int
 
     def __init__(self, watcher_type_name: str, name: str, repo: str):
         super().__init__(watcher_type_name, name)

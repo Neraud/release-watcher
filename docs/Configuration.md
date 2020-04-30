@@ -38,6 +38,30 @@ With `runMode: once` (default), the programm simply exits once the results are w
 
 Using `runMode: repeat`, the program never stops (untill interrupted) and sleeps for `sleepDuration` between each execution.
 
+## Common
+
+This section contains common configurations shared by multiple watcher types.
+These settings can also be defined at the watcher level, but it's easier to have default values set once here.
+
+They are grouped by services.
+
+```yaml
+common:
+  github:
+```
+
+### Github
+
+```yaml
+common:
+  github:
+    rate_limit_wait_max: 120
+```
+
+These settings are applied by default on `github_release`, `github_tag` and `github_commit` watchers.
+
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
+
 ## Sources
 
 Multiple sources can be used at the same time.
@@ -86,6 +110,7 @@ You can watch for a docker image in any v2 registry.
   repo: registry-1.docker.io
   image: python
   tag: 3.7.2-alpine3.8
+  rate_limit_wait_max: 120
   includes:
     - 3\.[7-9]\.[0-9]+-alpine3\.8
   excludes:
@@ -121,6 +146,7 @@ You can watch for a release in a GitHub repository.
   type: github_release
   repo: dateutil/dateutil
   release: 2.6.0
+  rate_limit_wait_max: 120
   includes:
     - ^2\.6\.
 ```
@@ -128,6 +154,7 @@ You can watch for a release in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `release`: the currently used release (based on the release tag name)
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
 
@@ -145,6 +172,7 @@ You can watch for a tag in a GitHub repository.
   type: github_tag
   repo: yaml/pyyaml
   tag: 4.1
+  rate_limit_wait_max: 120
   includes:
     - .*
   excludes:
@@ -154,6 +182,7 @@ You can watch for a tag in a GitHub repository.
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `tag`: the currently used tag
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 * `includes`: an optional list of regular expressions that a tag must match to be considered
 * `excludes`: an optional list of regular expressions that a tag must not match to be considered
 
@@ -174,12 +203,14 @@ You can watch for commits in a GitHub repository.
   repo: docker-library/python
   branch: master
   commit: f6e98ea8b8ef4e9a520e05d481d2640a35f9542c
+  rate_limit_wait_max: 120
 ```
 
 * `name`: optional name for the watcher. Defaults to `[repo]`
 * `repo`: the repository name
 * `branch`: the branch to scan
 * `commit`: the current commit hash
+* `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exeeded
 
 In the example above, we are watching new tags on the `docker-library/python` repository on GitHub.
 

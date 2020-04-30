@@ -80,8 +80,14 @@ class GithubCommitWatcherType(WatcherType):
         branch = watcher_config['branch']
         commit = str(watcher_config['commit'])
         name = watcher_config.get('name', repo)
+        rate_limit_wait_max = watcher_config.get('rate_limit_wait_max')
 
-        return GithubCommitWatcherConfig(name, repo, branch, commit)
+        config = GithubCommitWatcherConfig(name, repo, branch, commit)
+
+        config.rate_limit_wait_max = watcher_config.get(
+            'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
+
+        return config
 
     def create_watcher(self, watcher_config: GithubCommitWatcherConfig
                        ) -> GithubCommitWatcher:

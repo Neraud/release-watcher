@@ -8,6 +8,10 @@ core:
   #runMode: repeat
   #sleepDuration: 30
 
+common:
+  github:
+    rate_limit_wait_max: 120
+
 sources:
   - type: inline
     watchers:

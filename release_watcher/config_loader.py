@@ -72,6 +72,7 @@ def _parse_conf(conf: Dict) -> GlobalConfig:
     config = GlobalConfig()
     config.core = _parse_core_conf(conf)
     config.common = CommonConfig()
+    config.common.github = _parse_github_conf(conf)
     config.sources = _parse_sources_conf(conf)
     if not config.sources:
         raise Exception('No valid source configuration found')
@@ -115,6 +116,27 @@ def _parse_core_conf(conf: Dict) -> CoreConfig:
     core_config = CoreConfig(threads, run_mode)
     core_config.sleep_duration = sleep_duration
     return core_config
+
+
+def _parse_github_conf(conf: Dict) -> GithubConfig:
+    logger.debug("Loading github configuration")
+
+    default_conf = {'rate_limit_wait_max': 120}
+
+    githug_conf = conf['common'].get('github', default_conf)
+    github_config = GithubConfig()
+
+    rate_limit_wait_max = githug_conf.get('rate_limit_wait_max',
+                                          default_conf['rate_limit_wait_max'])
+    if not isinstance(rate_limit_wait_max, int):
+        logger.warning(
+            "rate_limit_wait_max '%s' is not a number, falling back to %d" %
+            (rate_limit_wait_max, default_conf['rate_limit_wait_max']))
+        rate_limit_wait_max = default_conf['rate_limit_wait_max']
+
+    github_config.rate_limit_wait_max = rate_limit_wait_max
+
+    return github_config
 
 
 def _parse_sources_conf(conf: Dict) -> Sequence[source_manager.SourceConfig]:

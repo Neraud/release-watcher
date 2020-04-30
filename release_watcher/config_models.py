@@ -29,8 +29,16 @@ class CoreConfig:
         self.sleep_duration = sleep_duration
 
 
+class GithubConfig:
+    """Model representing the github configuration"""
+
+    rate_limit_wait_max: int = None
+
+
 class CommonConfig:
     """Model representing common watchers configuration"""
+
+    github: GithubConfig = None
 
 
 class GlobalConfig:
