@@ -425,9 +425,14 @@ You can export the outputs to a Prometheus file.
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
-A single gauge is written : `releasewatcher_new_releases_total`, and it counts the number of missed releases.
+The exported metrics are : 
 
-If has the following labels :
+* `releasewatcher_new_releases_total` : the number of missed releases
+* `releasewatcher_release_age_seconds` : the age (in seconds) of the current release
+  * this metric doesn't handle timezones well, so it should be used at the days scope to make sense
+  * if the current release is not found (too old to be on the first 'page' of results), it will be set to +Inf
+
+These metrics have the following labels :
 
 * `name` : the watcher name
 * `type` : the watcher type
@@ -438,6 +443,7 @@ For example :
 # HELP releasewatcher_new_releases_total Number of new releases
 # TYPE releasewatcher_new_releases_total gauge
 releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
+releasewatcher_release_age_seconds{name="PyYAML PyPI",type="pypi"} +Inf
 ```
 
 ### Prometheus Http endpoint
@@ -453,9 +459,14 @@ You can expose the outputs on an HTTP endpoint to be scraped by a Prometheus ins
 
 The metrics will be availble on <http://[host_ip]:[port]/>
 
-A single gauge is exported : `releasewatcher_new_releases_total`, and it counts the number of missed releases.
+The exported metrics are : 
 
-If has the following labels :
+* `releasewatcher_new_releases_total` : the number of missed releases
+* `releasewatcher_release_age_seconds` : the age (in seconds) of the current release
+  * this metric doesn't handle timezones well, so it should be used at the days scope to make sense
+  * if the current release is not found (too old to be on the first *page* of results), it will be set to +Inf
+
+These metrics have the following labels :
 
 * `name` : the watcher name
 * `type` : the watcher type
@@ -468,6 +479,7 @@ For example :
 # HELP releasewatcher_new_releases_total Number of new releases
 # TYPE releasewatcher_new_releases_total gauge
 releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
+releasewatcher_release_age_seconds{name="PyYAML PyPI",type="pypi"} +Inf
 ```
 
 *Note* : this exporter only makes sense with `core.runMode` set to `repeat`.
