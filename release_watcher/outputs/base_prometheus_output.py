@@ -10,15 +10,17 @@ logger = logging.getLogger(__name__)
 class BasePrometheusOutput(Output):
     """Base Output that exposes Prometheus metrics"""
 
-    missed_releases_gauge: Gauge = None
+    metrics_namespace = "releasewatcher"
     registry: CollectorRegistry = None
+    new_releases_gauge: Gauge = None
 
     def _outputMetrics(self, results: Sequence[watcher_models.WatchResult]):
-        if not self.missed_releases_gauge:
-            logger.debug("Initializing missed_releases_gauge")
+        if not self.new_releases_gauge:
+            logger.debug("Initializing new_releases_gauge")
             label_names = ['name', 'type']
-            self.missed_releases_gauge = Gauge(
-                'missed_releases', 'Number of missed releases',
+            self.new_releases_gauge = Gauge(
+                '%s_new_releases_total' % self.metrics_namespace,
+                'Number of new releases',
                 label_names, registry=self.registry)
 
         for result in results:
@@ -26,5 +28,5 @@ class BasePrometheusOutput(Output):
                 str(result.config.name),
                 result.config.watcher_type_name
             ]
-            self.missed_releases_gauge.labels(*label_values).set(
+            self.new_releases_gauge.labels(*label_values).set(
                 len(result.missed_releases))

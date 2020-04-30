@@ -425,7 +425,7 @@ You can export the outputs to a Prometheus file.
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
 
-A single gauge is written : `missed_releases`, and it counts the number of missed releases.
+A single gauge is written : `releasewatcher_new_releases_total`, and it counts the number of missed releases.
 
 If has the following labels :
 
@@ -435,9 +435,9 @@ If has the following labels :
 For example :
 
 ```go
-# HELP missed_releases Number of missed releases
-# TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage",type="pypi"} 2.0
+# HELP releasewatcher_new_releases_total Number of new releases
+# TYPE releasewatcher_new_releases_total gauge
+releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
 ```
 
 ### Prometheus Http endpoint
@@ -453,7 +453,7 @@ You can expose the outputs on an HTTP endpoint to be scraped by a Prometheus ins
 
 The metrics will be availble on <http://[host_ip]:[port]/>
 
-A single gauge is exported : `missed_releases`, and it counts the number of missed releases.
+A single gauge is exported : `releasewatcher_new_releases_total`, and it counts the number of missed releases.
 
 If has the following labels :
 
@@ -465,9 +465,9 @@ For example :
 ```go
 [many python standard metrics]
 
-# HELP missed_releases Number of missed releases
-# TYPE missed_releases gauge
-missed_releases{name="PythonAlpineImage",type="pypi"} 2.0
+# HELP releasewatcher_new_releases_total Number of new releases
+# TYPE releasewatcher_new_releases_total gauge
+releasewatcher_new_releases_total{name="PyYAML PyPI",type="pypi"} 2.0
 ```
 
 *Note* : this exporter only makes sense with `core.runMode` set to `repeat`.
