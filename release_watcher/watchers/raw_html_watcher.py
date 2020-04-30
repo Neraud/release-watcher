@@ -78,7 +78,8 @@ class RawHtmlWatcher(Watcher):
 
     def _call_raw_page(self) -> Sequence[Tag]:
         if self.config.basic_auth:
-            auth = (self.config.basic_auth['username'], self.config.basic_auth['password'])
+            auth = (self.config.basic_auth['username'],
+                    self.config.basic_auth['password'])
         else:
             auth = None
         response = requests.get(self.config.page_url, auth=auth)
@@ -88,7 +89,8 @@ class RawHtmlWatcher(Watcher):
             soup = BeautifulSoup(response_content, 'html.parser')
 
             if self.config.container_selector:
-                container_element = soup.select_one(self.config.container_selector)
+                container_element = soup.select_one(
+                    self.config.container_selector)
             else:
                 container_element = soup
 
