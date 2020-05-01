@@ -122,8 +122,8 @@ def _parse_github_conf(conf: Dict) -> GithubConfig:
     logger.debug("Loading github configuration")
 
     default_conf = {'rate_limit_wait_max': 120}
-
-    githug_conf = conf['common'].get('github', default_conf)
+    common_conf = conf.get('common', {'github': default_conf})
+    githug_conf = common_conf.get('github', default_conf)
     github_config = GithubConfig()
 
     github_config.username = githug_conf.get('username')
