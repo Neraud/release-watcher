@@ -35,13 +35,7 @@ class PrometheusFileOutput(BasePrometheusOutput):
 
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
         logger.debug("Writing results to %s " % self.config.path)
-
-        if not self.registry:
-            logger.debug("Initializing registry")
-            self.registry = CollectorRegistry()
-
         self._outputMetrics(results)
-
         write_to_textfile(self.config.path, self.registry)
 
 

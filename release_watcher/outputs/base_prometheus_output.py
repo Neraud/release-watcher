@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Sequence
 from prometheus_client import CollectorRegistry, Gauge
-from release_watcher.outputs.output_manager import Output
+from release_watcher.outputs.output_manager import Output, OutputConfig
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -15,6 +15,10 @@ class BasePrometheusOutput(Output):
     registry: CollectorRegistry = None
     new_releases_gauge: Gauge = None
     release_age_gauge: Gauge = None
+
+    def __init__(self, config: OutputConfig):
+        super().__init__(config)
+        self.registry = CollectorRegistry()
 
     def _outputMetrics(self, results: Sequence[watcher_models.WatchResult]):
         if not self.new_releases_gauge:
