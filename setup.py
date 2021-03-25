@@ -25,7 +25,7 @@ setup(
     packages=find_packages(exclude=('tests', )),
     install_requires=[
         'requests==2.22.0',
-        'pyyaml==5.1.1',
+        'pyyaml==5.4',
         'Click==7.0',
         'www-authenticate==0.9.2',
         'python-dateutil==2.6.0',
