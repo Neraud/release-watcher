@@ -146,44 +146,69 @@ class DockerRegistryWatcher(Watcher):
             raise WatchError("Authentication failed, response code %d" %
                              response.status_code)
 
-    def _get_tag_date(self, tag: str, authToken: str = None) -> datetime:
+    def _get_tag_date(self, tag: str) -> datetime:
         docker_repo_url = 'https://%s/v2/%s/manifests/%s' % (
             self.config.repo, self.config.image, tag)
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+        }
 
         if self.auth_token:
             headers['Authorization'] = 'Bearer %s' % self.auth_token
 
-        # It seems the dockerhub api sometimes returns a partial content
-        # Retries up to 5 times to work around the issue
-        retry = 0
-        get_tag_date_error = None
-
-        while retry < 5:
-            try:
-                return self._get_tag_date_try(docker_repo_url, headers)
-            except json.decoder.JSONDecodeError as err:
-                get_tag_date_error = err
-                retry += 1
-                logger.warning(
-                    "Error fetching date for '%s:%s' (try # %d) : %s" % (
-                        self.config.name, tag, retry, err))
-
-        raise WatchError("Error retrieving tag date : %s" % get_tag_date_error)
-
-    def _get_tag_date_try(self, repo_url: str, headers: Dict) -> datetime:
-        response = requests.get(repo_url, headers=headers)
+        response = requests.get(docker_repo_url, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
-
             tag_date = None
-            for history in content['history']:
-                layer_date = dateutil.parser.parse(
-                    json.loads(history['v1Compatibility'])['created'])
-                if tag_date is None or layer_date > tag_date:
-                    tag_date = layer_date
+
+            if 'manifests' in content:
+                for manifest in content['manifests']:
+                    m_date = self._get_date_from_manifest(manifest['digest'])
+                    if tag_date is None or m_date > tag_date:
+                        tag_date = m_date
+            else:
+                tag_date = self._get_tag_date_from_config(
+                    content['config']['digest'])
 
             return tag_date
+        else:
+            raise WatchError(
+                "Docker registry api call failed, response code %d" %
+                response.status_code)
+
+    def _get_date_from_manifest(self, digest: str) -> datetime:
+        api_url = 'https://%s/v2/%s/manifests/%s' % (self.config.repo,
+                                                     self.config.image, digest)
+        headers = {
+            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+        }
+
+        if self.auth_token:
+            headers['Authorization'] = 'Bearer %s' % self.auth_token
+
+        response = requests.get(api_url, headers=headers)
+        if response.status_code == 200:
+            content = json.loads(response.content.decode('utf-8'))
+            return self._get_tag_date_from_config(content['config']['digest'])
+        else:
+            raise WatchError(
+                "Docker registry api call failed, response code %d" %
+                response.status_code)
+
+    def _get_tag_date_from_config(self, digest: str) -> datetime:
+        api_url = 'https://%s/v2/%s/blobs/%s' % (self.config.repo,
+                                                 self.config.image, digest)
+        headers = {
+            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+        }
+
+        if self.auth_token:
+            headers['Authorization'] = 'Bearer %s' % self.auth_token
+
+        response = requests.get(api_url, headers=headers)
+        if response.status_code == 200:
+            content = json.loads(response.content.decode('utf-8'))
+            return dateutil.parser.parse(content['created'])
         else:
             raise WatchError(
                 "Docker registry api call failed, response code %d" %
