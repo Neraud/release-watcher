@@ -24,7 +24,7 @@ setup(
     long_description=read("README.md"),
     packages=find_packages(exclude=('tests', )),
     install_requires=[
-        'requests==2.22.0',
+        'requests==2.31.0',
         'pyyaml==5.4',
         'Click==7.0',
         'www-authenticate==0.9.2',
