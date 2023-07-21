@@ -30,7 +30,7 @@ setup(
         'www-authenticate==0.9.2',
         'python-dateutil==2.8.2',
         'beautifulsoup4==4.12.2',
-        'prometheus_client==0.17.1',
+        'prometheus-client==0.17.1',
     ],
     classifiers=[
         'License :: OSI Approved :: MIT License',

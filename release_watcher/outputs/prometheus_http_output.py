@@ -41,7 +41,7 @@ class PrometheusHttpOutput(BasePrometheusOutput):
         if not self.server_started:
             logger.info("Starting Prometheus HTTP Server on port %d" %
                         self.config.port)
-            start_http_server(self.config.port, '', self.registry)
+            start_http_server(self.config.port, '0.0.0.0', self.registry)
             self.server_started = True
 
         self._outputMetrics(results)
