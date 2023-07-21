@@ -90,9 +90,13 @@ sources:
 sources:
   - type: file
     path: /path/to/watchers.yml
+  - type: file
+    path: /path/to/watchers.d/*.yml
 ```
 
 If `path` doesn't start with a `/`, it is assumed to be relative to the main configuration file directory.
+
+`path` supports globs.
 
 The external file has the same structure as the `watchers` sub element :
 

@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, Sequence
+import glob
 from release_watcher.config_models import CommonConfig
 from release_watcher.sources.source_manager import SourceConfig, SourceType
 from release_watcher.sources.base_yaml_source_loader \
@@ -32,7 +33,13 @@ class FileSource(BaseYamlSourceLoader):
 
     def read_watchers(self) -> Sequence[watcher_manager.WatcherConfig]:
         logger.debug("Reading watchers from file %s", self.config.path)
-        return self.parse_from_file(self.config.path)
+        
+        watcher_configs = []
+        for path in glob.glob(self.config.path):
+            logger.debug(" - %s", path)
+            watcher_configs.extend(self.parse_from_file(path))
+    
+        return watcher_configs
 
 
 class FileSourceType(SourceType):
