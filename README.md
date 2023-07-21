@@ -37,19 +37,7 @@ Release Watcher currently supports :
 
 ## Installation
 
-### Native
-
-```shell
-git clone https://github.com/Neraud/release-watcher
-python3 -m pip install .
-```
-
 ### Docker
-
-```shell
-git clone https://github.com/Neraud/release-watcher
-docker build -t release_watcher .
-```
 
 You can use the following environment variables :
 
@@ -61,13 +49,20 @@ The easiest way to use the image is to mount a `/data` folder :
 mkdir data
 cp example/{config,github_watchers}.yaml data/
 # vi data/config.yaml
-docker run -v $(pwd)/data:/data release_watcher
+docker run -v $(pwd)/data:/data ghcr.io/neraud/release-watcher:latest
 ```
 
 If you want to use the Prometheus HTTP output, you will need to forward the configured port.
 
 ```shell
-docker run -v $(pwd)/data:/data -p 8080:8080 release_watcher
+docker run -v $(pwd)/data:/data -p 8080:8080 ghcr.io/neraud/release-watcher:latest
+```
+
+### Native
+
+```shell
+git clone https://github.com/Neraud/release-watcher
+python3 -m pip install .
 ```
 
 ## Configuration
@@ -86,6 +81,9 @@ release_watcher --config /path/to/config.yaml
 
 ```shell
 git clone https://github.com/Neraud/release-watcher
+cd release-watcher
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install --editable .
 ```
 
