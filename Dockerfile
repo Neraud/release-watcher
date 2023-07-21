@@ -1,5 +1,7 @@
 FROM python:3.11.4-alpine3.18
 
+LABEL org.opencontainers.image.source=https://github.com/Neraud/release-watcher
+
 ENV CONFIG_PATH=/data/config.yaml
 
 RUN adduser app -D -u 1000
