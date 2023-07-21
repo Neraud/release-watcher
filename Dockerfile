@@ -1,4 +1,4 @@
-FROM python:3.7.3-alpine3.9
+FROM python:3.11.4-alpine3.18
 
 ENV CONFIG_PATH=/data/config.yaml
 

@@ -24,20 +24,19 @@ setup(
     long_description=read("README.md"),
     packages=find_packages(exclude=('tests', )),
     install_requires=[
-        'requests==2.22.0',
-        'pyyaml==5.4',
-        'Click==7.0',
+        'requests==2.31.0',
+        'pyyaml==6.0.1',
+        'Click==8.1.6',
         'www-authenticate==0.9.2',
-        'python-dateutil==2.6.0',
-        'beautifulsoup4==4.8.2',
-        'prometheus_client==0.7.0',
+        'python-dateutil==2.8.2',
+        'beautifulsoup4==4.12.2',
+        'prometheus_client==0.17.1',
     ],
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.11',
     ],
     entry_points='''
         [console_scripts]
