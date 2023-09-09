@@ -150,7 +150,7 @@ class DockerRegistryWatcher(Watcher):
         docker_repo_url = 'https://%s/v2/%s/manifests/%s' % (
             self.config.repo, self.config.image, tag)
         headers = {
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+            'Accept': 'application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.index.v1+json'
         }
 
         if self.auth_token:
@@ -164,6 +164,9 @@ class DockerRegistryWatcher(Watcher):
             if 'manifests' in content:
                 for manifest in content['manifests']:
                     m_date = self._get_date_from_manifest(manifest['digest'])
+                    if m_date is None:
+                        continue
+
                     if tag_date is None or m_date > tag_date:
                         tag_date = m_date
             else:
@@ -172,6 +175,9 @@ class DockerRegistryWatcher(Watcher):
 
             return tag_date
         else:
+            logger.debug('Docker registry api call failed, response code %d', response.status_code)
+            logger.debug('headers : %s', response.headers)
+            logger.debug('content: %s', response.content)
             raise WatchError(
                 "Docker registry api call failed, response code %d" %
                 response.status_code)
@@ -180,7 +186,7 @@ class DockerRegistryWatcher(Watcher):
         api_url = 'https://%s/v2/%s/manifests/%s' % (self.config.repo,
                                                      self.config.image, digest)
         headers = {
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+            'Accept': 'application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json'
         }
 
         if self.auth_token:
@@ -191,6 +197,9 @@ class DockerRegistryWatcher(Watcher):
             content = json.loads(response.content.decode('utf-8'))
             return self._get_tag_date_from_config(content['config']['digest'])
         else:
+            logger.debug('Docker registry api call failed, response code %d', response.status_code)
+            logger.debug('headers : %s', response.headers)
+            logger.debug('content: %s', response.content)
             raise WatchError(
                 "Docker registry api call failed, response code %d" %
                 response.status_code)
@@ -208,8 +217,14 @@ class DockerRegistryWatcher(Watcher):
         response = requests.get(api_url, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
-            return dateutil.parser.parse(content['created'])
+            if 'created' in content:
+                return dateutil.parser.parse(content['created'])
+            else:
+                return None
         else:
+            logger.debug('Docker registry api call failed, response code %d', response.status_code)
+            logger.debug('headers : %s', response.headers)
+            logger.debug('content: %s', response.content)
             raise WatchError(
                 "Docker registry api call failed, response code %d" %
                 response.status_code)
