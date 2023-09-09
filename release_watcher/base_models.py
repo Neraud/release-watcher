@@ -1,8 +1,7 @@
+from abc import ABCMeta
 
-import abc
 
-
-class OutputConfig(metaclass=abc.ABCMeta):
+class OutputConfig(metaclass=ABCMeta):
     """Base class to store the configuration for an Output"""
 
     name: str = None
@@ -11,10 +10,10 @@ class OutputConfig(metaclass=abc.ABCMeta):
         self.name = name
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
+        return f'{self.__class__.__name__}({self})'
 
 
-class SourceConfig(metaclass=abc.ABCMeta):
+class SourceConfig(metaclass=ABCMeta):
     """Base class to store the configuration for a Source"""
 
     name: str = None
@@ -23,10 +22,10 @@ class SourceConfig(metaclass=abc.ABCMeta):
         self.name = name
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
+        return f'{self.__class__.__name__}({self})'
 
 
-class WatcherConfig(metaclass=abc.ABCMeta):
+class WatcherConfig(metaclass=ABCMeta):
     """Base class to store the configuration for a Watcher"""
 
     watcher_type_name: str = None
@@ -37,4 +36,4 @@ class WatcherConfig(metaclass=abc.ABCMeta):
         self.name = name
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self)
+        return f'{self.__class__.__name__}({self})'

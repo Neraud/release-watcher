@@ -1,4 +1,5 @@
 import logging
+from abc import ABCMeta
 from datetime import datetime, timezone
 from typing import Sequence
 from prometheus_client import CollectorRegistry, Gauge
@@ -8,10 +9,10 @@ from release_watcher.watchers import watcher_models
 logger = logging.getLogger(__name__)
 
 
-class BasePrometheusOutput(Output):
+class BasePrometheusOutput(Output, metaclass=ABCMeta):
     """Base Output that exposes Prometheus metrics"""
 
-    metrics_namespace = "releasewatcher"
+    metrics_namespace = 'releasewatcher'
     registry: CollectorRegistry = None
     new_releases_gauge: Gauge = None
     release_age_gauge: Gauge = None
@@ -20,20 +21,20 @@ class BasePrometheusOutput(Output):
         super().__init__(config)
         self.registry = CollectorRegistry()
 
-    def _outputMetrics(self, results: Sequence[watcher_models.WatchResult]):
+    def _output_metrics(self, results: Sequence[watcher_models.WatchResult]):
         if not self.new_releases_gauge:
-            logger.debug("Initializing new_releases_gauge")
+            logger.debug('Initializing new_releases_gauge')
             label_names = ['name', 'type']
             self.new_releases_gauge = Gauge(
-                '%s_new_releases_total' % self.metrics_namespace,
+                f'{self.metrics_namespace}_new_releases_total',
                 'Number of new releases',
                 label_names, registry=self.registry)
 
         if not self.release_age_gauge:
-            logger.debug("Initializing release_age_gauge")
+            logger.debug('Initializing release_age_gauge')
             label_names = ['name', 'type']
             self.release_age_gauge = Gauge(
-                '%s_release_age_seconds' % self.metrics_namespace,
+                f'{self.metrics_namespace}_release_age_seconds',
                 'Age of the current release',
                 label_names, registry=self.registry)
 
@@ -56,6 +57,6 @@ class BasePrometheusOutput(Output):
                     now = datetime.now()
                 release_age = (now - release_date).total_seconds()
             else:
-                release_age = float("inf")
+                release_age = float('inf')
 
             self.release_age_gauge.labels(*label_values).set(release_age)

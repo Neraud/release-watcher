@@ -2,8 +2,7 @@ import logging
 from typing import Dict, Sequence
 from prometheus_client import start_http_server
 from release_watcher.outputs.base_prometheus_output import BasePrometheusOutput
-from release_watcher.outputs.output_manager \
-    import OutputConfig, OutputType
+from release_watcher.outputs.output_manager import OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -21,10 +20,10 @@ class PrometheusHttpOutputConfig(OutputConfig):
         self.port = port
 
     def __str__(self) -> str:
-        return '%s' % (self.port)
+        return self.port
 
     def __repr__(self) -> str:
-        return 'PrometheusHttpOutputConfig(%s)' % self
+        return f'PrometheusHttpOutputConfig({self})'
 
 
 class PrometheusHttpOutput(BasePrometheusOutput):
@@ -36,15 +35,14 @@ class PrometheusHttpOutput(BasePrometheusOutput):
         super().__init__(config)
 
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
-        logger.debug("Exposing results on %d" % self.config.port)
+        logger.debug('Exposing results on %d', self.config.port)
 
         if not self.server_started:
-            logger.info("Starting Prometheus HTTP Server on port %d" %
-                        self.config.port)
+            logger.info('Starting Prometheus HTTP Server on port %d', self.config.port)
             start_http_server(self.config.port, '0.0.0.0', self.registry)
             self.server_started = True
 
-        self._outputMetrics(results)
+        self._output_metrics(results)
 
 
 class PrometheusHttpOutputType(OutputType):
@@ -53,13 +51,11 @@ class PrometheusHttpOutputType(OutputType):
     def __init__(self):
         super().__init__(OUTPUT_NAME)
 
-    def parse_config(self, global_conf: Dict,
-                     source_config: Dict) -> PrometheusHttpOutputConfig:
+    def parse_config(self, global_conf: Dict, source_config: Dict) -> PrometheusHttpOutputConfig:
         port = source_config.get('port', 8080)
 
         if not isinstance(port, int):
-            logger.warning("port '%s' is not a number, falling back to %d" %
-                           (port, 8080))
+            logger.warning('port %s is not a number, falling back to %d', port, 8080)
             port = 8080
 
         return PrometheusHttpOutputConfig(port)

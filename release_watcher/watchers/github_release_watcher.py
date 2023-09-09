@@ -1,16 +1,11 @@
 import logging
-import json
+from typing import Dict, Sequence
 import re
 import dateutil.parser
-from typing import Dict, Sequence
-from release_watcher.config_models \
-    import CommonConfig
-from release_watcher.watchers.watcher_models \
-    import Release, WatchError, WatchResult
-from release_watcher.watchers.watcher_manager \
-    import Watcher, WatcherConfig, WatcherType
-from release_watcher.watchers.base_github_watcher \
-    import BaseGithubWatcher, BaseGithubConfig
+from release_watcher.config_models import CommonConfig
+from release_watcher.watchers.watcher_models import Release, WatchResult
+from release_watcher.watchers.watcher_manager import WatcherType
+from release_watcher.watchers.base_github_watcher import BaseGithubWatcher, BaseGithubConfig
 
 logger = logging.getLogger(__name__)
 
@@ -32,18 +27,17 @@ class GithubReleaseWatcherConfig(BaseGithubConfig):
         self.excludes = excludes
 
     def __str__(self) -> str:
-        return '%s:%s' % (self.repo, self.release)
+        return f'{self.repo}:{self.release}'
 
 
 class GithubReleaseWatcher(BaseGithubWatcher):
-    """Implementation of a Watcher that checks for new releases in a GitHub
-    repository"""
+    """Implementation of a Watcher that checks for new releases in a GitHub repository"""
 
     def __init__(self, config: GithubReleaseWatcherConfig):
         super().__init__(config)
 
     def _do_watch(self) -> WatchResult:
-        logger.debug("Watching Github release %s" % self.config)
+        logger.debug('Watching Github release %s', self.config)
         response = self._call_github_api('releases')
         current_release_name = self.config.release
         current_release = None
@@ -63,22 +57,20 @@ class GithubReleaseWatcher(BaseGithubWatcher):
 
         for release in response:
             new_release_name = release['tag_name']
-            logger.debug(" - %s" % new_release_name)
+            logger.debug(' - %s', new_release_name)
 
             new_release_date = dateutil.parser.parse(release['published_at'])
             new_release = Release(new_release_name, new_release_date)
 
             if new_release_name == current_release_name:
-                logger.debug("Current release '%s' found" %
-                             current_release_name)
+                logger.debug('Current release %s found', current_release_name)
                 current_release = new_release
                 break
 
             missed_releases.append(new_release)
 
         if not current_release:
-            logger.warning("Current release '%s' not found !",
-                           current_release_name)
+            logger.warning('Current release %s not found !', current_release_name)
 
         logger.debug('Missed releases : %s', missed_releases)
         return WatchResult(self.config, current_release, missed_releases)
@@ -99,18 +91,14 @@ class GithubReleaseWatcherType(WatcherType):
         excludes = watcher_config.get('excludes', [])
         name = watcher_config.get('name', repo)
 
-        config = GithubReleaseWatcherConfig(
-            name, repo, release, includes, excludes)
+        config = GithubReleaseWatcherConfig(name, repo, release, includes, excludes)
 
-        config.username = watcher_config.get(
-            'username', common_config.github.username)
-        config.password = watcher_config.get(
-            'password', common_config.github.password)
+        config.username = watcher_config.get('username', common_config.github.username)
+        config.password = watcher_config.get('password', common_config.github.password)
         config.rate_limit_wait_max = watcher_config.get(
             'rate_limit_wait_max', common_config.github.rate_limit_wait_max)
 
         return config
 
-    def create_watcher(self, watcher_config: GithubReleaseWatcherConfig
-                       ) -> GithubReleaseWatcher:
+    def create_watcher(self, watcher_config: GithubReleaseWatcherConfig) -> GithubReleaseWatcher:
         return GithubReleaseWatcher(watcher_config)

@@ -2,15 +2,23 @@ from typing import Sequence
 from release_watcher.base_models import SourceConfig, OutputConfig
 
 
+class ConfigException(Exception):
+    """Exception raised when a something is wrong with the configuration"""
+    message: str = None
+
+    def __init__(self, message: str):
+        self.message = message
+
+
 class LoggerConfig:
     """Model representing the logger configuration"""
 
-    type: str = None
+    logger_type: str = None
     level: str = None
     path: str = None
 
-    def __init__(self, type, level, path=None):
-        self.type = type
+    def __init__(self, logger_type: str, level: str, path: str = None):
+        self.logger_type = logger_type
         self.level = level
         self.path = path
 

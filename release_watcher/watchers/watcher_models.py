@@ -21,7 +21,7 @@ class Release:
         self.release_date = release_date
 
     def __repr__(self):
-        return 'Release(%s, %s)' % (self.name, self.release_date)
+        return f'Release({self.name}, {self.release_date})'
 
 
 class WatchResult:
@@ -32,8 +32,7 @@ class WatchResult:
     missed_releases: Sequence[Release] = None
     most_recent_release: Release = None
 
-    def __init__(self, config, current_release: Release,
-                 missed_releases: Sequence[Release]):
+    def __init__(self, config, current_release: Release, missed_releases: Sequence[Release]):
         self.config = config
         self.current_release = current_release
         self.missed_releases = missed_releases

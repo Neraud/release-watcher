@@ -1,9 +1,8 @@
 import logging
 from typing import Dict, Sequence
-from prometheus_client import CollectorRegistry, write_to_textfile
+from prometheus_client import write_to_textfile
 from release_watcher.outputs.base_prometheus_output import BasePrometheusOutput
-from release_watcher.outputs.output_manager \
-    import OutputConfig, OutputType
+from release_watcher.outputs.output_manager import OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -21,10 +20,10 @@ class PrometheusFileOutputConfig(OutputConfig):
         self.path = path
 
     def __str__(self) -> str:
-        return '%s' % self.path
+        return self.path
 
     def __repr__(self) -> str:
-        return 'PrometheusFileOutputConfig(%s)' % self
+        return f'PrometheusFileOutputConfig({self})'
 
 
 class PrometheusFileOutput(BasePrometheusOutput):
@@ -34,8 +33,8 @@ class PrometheusFileOutput(BasePrometheusOutput):
         super().__init__(config)
 
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
-        logger.debug("Writing results to %s " % self.config.path)
-        self._outputMetrics(results)
+        logger.debug('Writing results to %s ', self.config.path)
+        self._output_metrics(results)
         write_to_textfile(self.config.path, self.registry)
 
 
@@ -45,12 +44,11 @@ class PrometheusFileOutputType(OutputType):
     def __init__(self):
         super().__init__(OUTPUT_NAME)
 
-    def parse_config(self, global_conf: Dict,
-                     source_config: Dict) -> PrometheusFileOutputConfig:
+    def parse_config(self, global_conf: Dict, source_config: Dict) -> PrometheusFileOutputConfig:
         path = source_config['path']
 
-        if not path.startswith("/"):
-            path = global_conf['configFileDir'] + "/" + path
+        if not path.startswith('/'):
+            path = f'{global_conf["configFileDir"]}/{path}'
 
         return PrometheusFileOutputConfig(path)
 

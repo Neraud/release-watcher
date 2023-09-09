@@ -1,8 +1,7 @@
 import logging
 import csv
 from typing import Dict, Sequence
-from release_watcher.outputs.output_manager \
-    import Output, OutputConfig, OutputType
+from release_watcher.outputs.output_manager import Output, OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -25,11 +24,10 @@ class CsvFileOutputConfig(OutputConfig):
         self.display_header = display_header
 
     def __str__(self) -> str:
-        return '%s(%s,%s)' % (self.path, self.display_up_to_date,
-                              self.display_header)
+        return f'{self.path}({self.display_up_to_date},{self.display_header})'
 
     def __repr__(self) -> str:
-        return 'CsvFileOutputConfig(%s)' % self
+        return f'CsvFileOutputConfig({self})'
 
 
 class CsvFileOutput(Output):
@@ -39,9 +37,9 @@ class CsvFileOutput(Output):
         super().__init__(config)
 
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
-        logger.debug("Writing results to %s " % self.config.path)
+        logger.debug('Writing results to %s', self.config.path)
 
-        with open(self.config.path, mode='w') as result_file:
+        with open(self.config.path, mode='w', encoding='UTF-8') as result_file:
             csv_writer = csv.writer(result_file,
                                     delimiter=',',
                                     quotechar='"',
@@ -65,15 +63,15 @@ class CsvFileOutput(Output):
             current_r = result.current_release.name
             current_r_date = result.current_release.release_date
         else:
-            current_r = ""
-            current_r_date = ""
+            current_r = ''
+            current_r_date = ''
 
         if result.most_recent_release:
             most_recent_r_name = result.most_recent_release.name
             most_recent_r_date = result.most_recent_release.release_date
         else:
-            most_recent_r_name = ""
-            most_recent_r_date = ""
+            most_recent_r_name = ''
+            most_recent_r_date = ''
 
         return [
             result.config.watcher_type_name, result.config.name, current_r,
@@ -88,15 +86,14 @@ class CsvFileOutputType(OutputType):
     def __init__(self):
         super().__init__(OUTPUT_NAME)
 
-    def parse_config(self, global_conf: Dict,
-                     source_config: Dict) -> CsvFileOutputConfig:
+    def parse_config(self, global_conf: Dict, source_config: Dict) -> CsvFileOutputConfig:
         path = source_config['path']
 
-        if not path.startswith("/"):
-            path = global_conf['configFileDir'] + "/" + path
+        if not path.startswith('/'):
+            path = f'{global_conf["configFileDir"]}/{path}'
 
-        display_up_to_date = source_config.get("displayUpToDate", True)
-        display_header = source_config.get("displayHeader", True)
+        display_up_to_date = source_config.get('displayUpToDate', True)
+        display_header = source_config.get('displayHeader', True)
 
         return CsvFileOutputConfig(path, display_up_to_date, display_header)
 

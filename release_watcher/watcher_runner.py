@@ -24,7 +24,7 @@ class WatcherRunner:
 
         Watchers are run sequentially"""
         threads = self.config.core.threads
-        logger.info("Running all watchers with %d threads", threads)
+        logger.info('Running all watchers with %d threads', threads)
 
         with ThreadPoolExecutor(max_workers=threads) as executor:
             futures = [

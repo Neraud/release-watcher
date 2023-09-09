@@ -1,5 +1,5 @@
 import logging
-import abc
+from abc import ABCMeta, abstractmethod
 import time
 from typing import Dict
 from release_watcher.base_models import WatcherConfig
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 WATCHER_TYPES = {}
 
 
-class Watcher(metaclass=abc.ABCMeta):
+class Watcher(metaclass=ABCMeta):
     """Base class to implement a Watcher"""
 
     config: WatcherConfig = None
@@ -22,28 +22,27 @@ class Watcher(metaclass=abc.ABCMeta):
     def watch(self) -> WatchResult:
         """Runs the watch logic to look for new releases"""
 
-        logger.info(" - running %s", self)
+        logger.info(' - running %s', self)
         try:
             start_time = time.time()
             result = self._do_watch()
             end_time = time.time()
             duration_ms = (end_time - start_time) * 1000
-            logger.info(
-                " = Finished running %s in %d ms (%d missed releases found)",
-                self, duration_ms, len(result.missed_releases))
+            logger.info(' = Finished running %s in %d ms (%d missed releases found)',
+                        self, duration_ms, len(result.missed_releases))
             return result
         except Exception as e:
             logger.exception('Error running %s : %s', self, e)
 
-    @abc.abstractmethod
+    @abstractmethod
     def _do_watch(self) -> WatchResult:
         pass
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self.config)
+        return f'{self.__class__.__name__}({self.config})'
 
 
-class WatcherType(metaclass=abc.ABCMeta):
+class WatcherType(metaclass=ABCMeta):
     """Class to represent a type of Watcher
 
     It's used both to generate the WatcherConfig for a Watcher,
@@ -55,17 +54,13 @@ class WatcherType(metaclass=abc.ABCMeta):
     def __init__(self, name: str):
         self.name = name
 
-    @abc.abstractmethod
-    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) \
-            -> WatcherConfig:
-        """Parses the raw configuration from the user and returns a
-        WatcherConfig instance"""
-        pass
+    @abstractmethod
+    def parse_config(self, common_config: CommonConfig, watcher_config: Dict) -> WatcherConfig:
+        """Parses the raw configuration from the user and returns a WatcherConfig instance"""
 
-    @abc.abstractmethod
+    @abstractmethod
     def create_watcher(self, watcher_config: WatcherConfig) -> Watcher:
         """Creates the Watcher instance from a configuation"""
-        pass
 
 
 def register_watcher_type(watcher_type: WatcherType):
@@ -80,5 +75,5 @@ def get_watcher_type(name: str) -> WatcherType:
 
     if name in WATCHER_TYPES:
         return WATCHER_TYPES[name]
-    else:
-        raise ValueError('The watcher type %s is unknown' % name)
+
+    raise ValueError(f'The watcher type {name} is unknown')

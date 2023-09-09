@@ -1,5 +1,5 @@
 import logging
-import abc
+from abc import ABCMeta, abstractmethod
 from typing import Dict, Sequence
 from release_watcher.base_models import OutputConfig
 from release_watcher.watchers import watcher_models
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 OUTPUT_TYPES = {}
 
 
-class Output(metaclass=abc.ABCMeta):
+class Output(metaclass=ABCMeta):
     """Base class to implement an Output"""
 
     config: OutputConfig = None
@@ -17,16 +17,15 @@ class Output(metaclass=abc.ABCMeta):
     def __init__(self, config: OutputConfig):
         self.config = config
 
-    @abc.abstractmethod
+    @abstractmethod
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
         """Writes the results to the output"""
-        pass
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self.config)
+        return f'{self.__class__.__name__}({self.config})'
 
 
-class OutputType(metaclass=abc.ABCMeta):
+class OutputType(metaclass=ABCMeta):
     """Class to represent a type of Output
 
     It's used both to generate the OutputConfig for an Output,
@@ -38,23 +37,22 @@ class OutputType(metaclass=abc.ABCMeta):
     def __init__(self, name: str):
         self.name = name
 
-    @abc.abstractmethod
+    @abstractmethod
     def parse_config(self, global_conf: Dict,
                      source_config: Dict) -> OutputConfig:
         """Parses the raw configuration from the user and returns an
         OutputConfig instance"""
         return
 
-    @abc.abstractmethod
+    @abstractmethod
     def create_output(self, config: OutputConfig) -> Output:
         """Creates the Output instance from a configuation"""
-        pass
 
 
 def register_output_type(output_type: OutputType):
     """Regiters an OutputType to enable using it by name later"""
 
-    logger.info("Registering output type : %s", output_type.name)
+    logger.info('Registering output type : %s', output_type.name)
     OUTPUT_TYPES[output_type.name] = output_type
 
 
@@ -63,5 +61,5 @@ def get_output_type(name: str) -> OutputType:
 
     if name in OUTPUT_TYPES:
         return OUTPUT_TYPES[name]
-    else:
-        raise ValueError('The output type %s is unknown' % name)
+
+    raise ValueError(f'The output type {name} is unknown')

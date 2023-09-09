@@ -2,8 +2,7 @@ import logging
 from typing import Dict, Sequence
 from release_watcher.config_models import CommonConfig
 from release_watcher.sources.source_manager import SourceConfig, SourceType
-from release_watcher.sources.base_yaml_source_loader \
-    import BaseYamlSourceLoader
+from release_watcher.sources.base_yaml_source_loader import BaseYamlSourceLoader
 from release_watcher.watchers import watcher_manager
 
 logger = logging.getLogger(__name__)
@@ -33,7 +32,7 @@ class InlineSource(BaseYamlSourceLoader):
         super().__init__(common_config, config)
 
     def read_watchers(self) -> Sequence[watcher_manager.WatcherConfig]:
-        logger.debug("Reading inline watchers")
+        logger.debug('Reading inline watchers')
         return self.parse_from_content(self.config.inline_conf)
 
 
@@ -43,10 +42,9 @@ class InlineSourceType(SourceType):
     def __init__(self):
         super().__init__(SOURCE_NAME)
 
-    def parse_config(self, global_conf: Dict,
-                     source_config: Dict) -> InlineSourceConfig:
+    def parse_config(self, global_conf: Dict, source_config: Dict) -> InlineSourceConfig:
         return InlineSourceConfig(source_config)
 
-    def create_source(self, common_config: CommonConfig,
-                      config: InlineSourceConfig) -> InlineSource:
+    def create_source(self, common_config: CommonConfig, config: InlineSourceConfig) \
+            -> InlineSource:
         return InlineSource(common_config, config)

@@ -1,17 +1,14 @@
 import logging
 import json
-import requests
+from typing import Dict, Sequence
 import re
+import datetime
+import requests
 import www_authenticate
 import dateutil.parser
-import datetime
-from typing import Dict, Sequence
-from release_watcher.config_models \
-    import CommonConfig
-from release_watcher.watchers.watcher_models \
-    import Release, WatchError, WatchResult
-from release_watcher.watchers.watcher_manager \
-    import Watcher, WatcherConfig, WatcherType
+from release_watcher.config_models import CommonConfig
+from release_watcher.watchers.watcher_models import Release, WatchError, WatchResult
+from release_watcher.watchers.watcher_manager import Watcher, WatcherConfig, WatcherType
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +34,7 @@ class DockerRegistryWatcherConfig(WatcherConfig):
         self.excludes = excludes
 
     def __str__(self) -> str:
-        return '%s:%s:%s' % (self.repo, self.image, self.tag)
+        return f'{self.repo}:{self.image}:{self.tag}'
 
 
 class DockerRegistryWatcher(Watcher):
@@ -51,7 +48,7 @@ class DockerRegistryWatcher(Watcher):
         self.auth_token = None
 
     def _do_watch(self) -> WatchResult:
-        logger.debug("Watching docker registry %s" % self.config)
+        logger.debug('Watching docker registry %s', self.config)
         tags = self._get_all_tags_from_registry()
 
         for ire in self.config.includes:
@@ -73,15 +70,15 @@ class DockerRegistryWatcher(Watcher):
         missed_releases = []
 
         for release in releases:
-            logger.debug(" - %s" % release.name)
+            logger.debug(' - %s', release.name)
             if release.name == current_tag:
-                logger.debug("Current tag '%s' found" % current_tag)
+                logger.debug('Current tag %s found', current_tag)
                 current_release = release
                 break
             missed_releases.append(release)
 
         if not current_release:
-            logger.warning("Current tag '%s' not found !", current_tag)
+            logger.warning('Current tag %s not found !', current_tag)
 
         logger.debug('Missed tags : %s', missed_releases)
         return WatchResult(self.config, current_release, missed_releases)
@@ -91,13 +88,12 @@ class DockerRegistryWatcher(Watcher):
 
         if api_response.status_code == 401:
             if 'Www-Authenticate' in api_response.headers:
-                logger.debug("Auhentication required, requesting a token")
+                logger.debug('Auhentication required, requesting a token')
                 self.auth_token = self._call_docker_registry_api_auth(
                     api_response.headers['Www-Authenticate'])
                 api_response = self._call_registry_api_tags_list(page_url)
             else:
-                raise Exception("Authentication required" +
-                                ", but no authentication method provided !")
+                raise Exception('Authentication required, but no authentication method provided !')
 
         if api_response.status_code == 200:
             content = json.loads(api_response.content.decode('utf-8'))
@@ -107,21 +103,19 @@ class DockerRegistryWatcher(Watcher):
                 next_tags = self._get_all_tags_from_registry(next_url)
                 tags += next_tags
             return tags
-        else:
-            raise Exception(
-                "Docker registry api call failed, response code %d" %
-                api_response.status_code)
+
+        raise Exception(
+            f'Docker registry api call failed, response code {api_response.status_code}')
 
     def _call_registry_api_tags_list(self, page_url=None) -> requests.Response:
         if page_url:
-            docker_repo_url = 'https://%s%s' % (self.config.repo, page_url)
+            docker_repo_url = f'https://{self.config.repo}{page_url}'
         else:
-            docker_repo_url = 'https://%s/v2/%s/tags/list' % (
-                self.config.repo, self.config.image)
+            docker_repo_url = f'https://{self.config.repo}/v2/{self.config.image}/tags/list'
         headers = {'Content-Type': 'application/json'}
 
         if self.auth_token:
-            headers['Authorization'] = 'Bearer %s' % self.auth_token
+            headers['Authorization'] = f'Bearer {self.auth_token}'
 
         response = requests.get(docker_repo_url, headers=headers)
         return response
@@ -135,26 +129,27 @@ class DockerRegistryWatcher(Watcher):
             if key != 'realm':
                 auth_params.append('%s=%s' %
                                    (key, parsed_hearder['bearer'][key]))
-        auth_url = '%s?%s' % (realm, '&'.join(auth_params))
+        auth_url = f'{realm}?{"&".join(auth_params)}'
         headers = {'Content-Type': 'application/json'}
         response = requests.get(auth_url, headers=headers)
 
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
             return content['token']
-        else:
-            raise WatchError("Authentication failed, response code %d" %
-                             response.status_code)
+
+        raise WatchError(f'Authentication failed, response code {response.status_code}')
 
     def _get_tag_date(self, tag: str) -> datetime:
-        docker_repo_url = 'https://%s/v2/%s/manifests/%s' % (
-            self.config.repo, self.config.image, tag)
+        docker_repo_url = f'https://{self.config.repo}/v2/{self.config.image}/manifests/{tag}'
         headers = {
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.index.v1+json'
+            'Accept': ','.join([
+                'application/vnd.docker.distribution.manifest.v2+json',
+                'application/vnd.oci.image.index.v1+json',
+            ])
         }
 
         if self.auth_token:
-            headers['Authorization'] = 'Bearer %s' % self.auth_token
+            headers['Authorization'] = f'Bearer {self.auth_token}'
 
         response = requests.get(docker_repo_url, headers=headers)
         if response.status_code == 200:
@@ -174,45 +169,42 @@ class DockerRegistryWatcher(Watcher):
                     content['config']['digest'])
 
             return tag_date
-        else:
-            logger.debug('Docker registry api call failed, response code %d', response.status_code)
-            logger.debug('headers : %s', response.headers)
-            logger.debug('content: %s', response.content)
-            raise WatchError(
-                "Docker registry api call failed, response code %d" %
-                response.status_code)
+
+        logger.debug('Docker registry api call failed, response code %d', response.status_code)
+        logger.debug('headers : %s', response.headers)
+        logger.debug('content: %s', response.content)
+        raise WatchError(f'Docker registry api call failed, response code {response.status_code}')
 
     def _get_date_from_manifest(self, digest: str) -> datetime:
-        api_url = 'https://%s/v2/%s/manifests/%s' % (self.config.repo,
-                                                     self.config.image, digest)
+        api_url = f'https://{self.config.repo}/v2/{self.config.image}/manifests/{digest}'
         headers = {
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json'
+            'Accept': ','.join([
+                'application/vnd.docker.distribution.manifest.v2+json',
+                'application/vnd.oci.image.manifest.v1+json',
+            ])
         }
 
         if self.auth_token:
-            headers['Authorization'] = 'Bearer %s' % self.auth_token
+            headers['Authorization'] = f'Bearer {self.auth_token}'
 
         response = requests.get(api_url, headers=headers)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
             return self._get_tag_date_from_config(content['config']['digest'])
-        else:
-            logger.debug('Docker registry api call failed, response code %d', response.status_code)
-            logger.debug('headers : %s', response.headers)
-            logger.debug('content: %s', response.content)
-            raise WatchError(
-                "Docker registry api call failed, response code %d" %
-                response.status_code)
+
+        logger.debug('Docker registry api call failed, response code %d', response.status_code)
+        logger.debug('headers : %s', response.headers)
+        logger.debug('content: %s', response.content)
+        raise WatchError(f'Docker registry api call failed, response code {response.status_code}')
 
     def _get_tag_date_from_config(self, digest: str) -> datetime:
-        api_url = 'https://%s/v2/%s/blobs/%s' % (self.config.repo,
-                                                 self.config.image, digest)
+        api_url = f'https://{self.config.repo}/v2/{self.config.image}/blobs/{digest}'
         headers = {
             'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
         }
 
         if self.auth_token:
-            headers['Authorization'] = 'Bearer %s' % self.auth_token
+            headers['Authorization'] = f'Bearer {self.auth_token}'
 
         response = requests.get(api_url, headers=headers)
         if response.status_code == 200:
@@ -221,13 +213,11 @@ class DockerRegistryWatcher(Watcher):
                 return dateutil.parser.parse(content['created'])
             else:
                 return None
-        else:
-            logger.debug('Docker registry api call failed, response code %d', response.status_code)
-            logger.debug('headers : %s', response.headers)
-            logger.debug('content: %s', response.content)
-            raise WatchError(
-                "Docker registry api call failed, response code %d" %
-                response.status_code)
+
+        logger.debug('Docker registry api call failed, response code %d', response.status_code)
+        logger.debug('headers : %s', response.headers)
+        logger.debug('content: %s', response.content)
+        raise WatchError(f'Docker registry api call failed, response code {response.status_code}')
 
 
 class DockerRegistryWatcherType(WatcherType):
@@ -241,17 +231,15 @@ class DockerRegistryWatcherType(WatcherType):
         repo = watcher_config['repo']
         image = watcher_config['image']
 
-        if repo == "registry-1.docker.io" and "/" not in image:
-            image = "library/%s" % image
+        if repo == 'registry-1.docker.io' and '/' not in image:
+            image = f'library/{image}'
 
         tag = str(watcher_config['tag'])
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
-        name = watcher_config.get('name', '%s:%s' % (repo, image))
+        name = watcher_config.get('name', f'{repo}:{image}')
 
-        return DockerRegistryWatcherConfig(name, repo, image, tag, includes,
-                                           excludes)
+        return DockerRegistryWatcherConfig(name, repo, image, tag, includes, excludes)
 
-    def create_watcher(self, watcher_config: DockerRegistryWatcherConfig
-                       ) -> DockerRegistryWatcher:
+    def create_watcher(self, watcher_config: DockerRegistryWatcherConfig) -> DockerRegistryWatcher:
         return DockerRegistryWatcher(watcher_config)

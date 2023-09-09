@@ -1,8 +1,7 @@
 import logging
-import yaml
 from typing import Dict, Sequence
-from release_watcher.outputs.output_manager \
-    import Output, OutputConfig, OutputType
+import yaml
+from release_watcher.outputs.output_manager import Output, OutputConfig, OutputType
 from release_watcher.watchers import watcher_models
 
 logger = logging.getLogger(__name__)
@@ -22,10 +21,10 @@ class YamlFileOutputConfig(OutputConfig):
         self.display_up_to_date = display_up_to_date
 
     def __str__(self) -> str:
-        return '%s(%s)' % (self.path, self.display_up_to_date)
+        return f'{self.path}({self.display_up_to_date})'
 
     def __repr__(self) -> str:
-        return 'YamlFileOutputConfig(%s)' % self
+        return f'YamlFileOutputConfig({self})'
 
 
 class YamlFileOutput(Output):
@@ -35,22 +34,19 @@ class YamlFileOutput(Output):
         super().__init__(config)
 
     def outputs(self, results: Sequence[watcher_models.WatchResult]):
-        logger.debug("Writing results as to %s " % self.config.path)
+        logger.debug('Writing results as to %s', self.config.path)
 
         yaml_dict = {'results': []}
         for result in results:
-            if not self.config.display_up_to_date and \
-                    not result.missed_releases:
+            if not self.config.display_up_to_date and not result.missed_releases:
                 continue
 
             result_dict = {}
             result_dict['type'] = result.config.watcher_type_name
             result_dict['name'] = result.config.name
             if result.current_release:
-                result_dict['currentRelease'] = \
-                    result.current_release.name
-                result_dict['currentReleaseDate'] = \
-                    result.current_release.release_date
+                result_dict['currentRelease'] = result.current_release.name
+                result_dict['currentReleaseDate'] = result.current_release.release_date
 
             result_dict['missedReleaseCount'] = len(result.missed_releases)
             result_dict['missedReleases'] = []
@@ -69,7 +65,7 @@ class YamlFileOutput(Output):
 
             yaml_dict['results'].append(result_dict)
 
-        with open(self.config.path, mode='w') as result_file:
+        with open(self.config.path, mode='w', encoding='UTF-8') as result_file:
             yaml.dump(yaml_dict, result_file, default_flow_style=False)
 
 
@@ -79,14 +75,13 @@ class YamlFileOutputType(OutputType):
     def __init__(self):
         super().__init__(OUTPUT_NAME)
 
-    def parse_config(self, global_conf: Dict,
-                     source_config: Dict) -> YamlFileOutputConfig:
+    def parse_config(self, global_conf: Dict, source_config: Dict) -> YamlFileOutputConfig:
         path = source_config['path']
 
-        if not path.startswith("/"):
-            path = global_conf['configFileDir'] + "/" + path
+        if not path.startswith('/'):
+            path = f'{global_conf["configFileDir"]}/{path}'
 
-        display_up_to_date = source_config.get("displayUpToDate", True)
+        display_up_to_date = source_config.get('displayUpToDate', True)
 
         return YamlFileOutputConfig(path, display_up_to_date)
 
