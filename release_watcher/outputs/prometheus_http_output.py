@@ -20,7 +20,7 @@ class PrometheusHttpOutputConfig(OutputConfig):
         self.port = port
 
     def __str__(self) -> str:
-        return self.port
+        return f'{self.port}'
 
     def __repr__(self) -> str:
         return f'PrometheusHttpOutputConfig({self})'

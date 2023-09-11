@@ -9,6 +9,9 @@ class OutputConfig(metaclass=ABCMeta):
     def __init__(self, name: str):
         self.name = name
 
+    def __str__(self) -> str:
+        return self.name
+
     def __repr__(self):
         return f'{self.__class__.__name__}({self})'
 
@@ -20,6 +23,9 @@ class SourceConfig(metaclass=ABCMeta):
 
     def __init__(self, name: str):
         self.name = name
+
+    def __str__(self) -> str:
+        return self.name
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self})'
@@ -34,6 +40,9 @@ class WatcherConfig(metaclass=ABCMeta):
     def __init__(self, watcher_type_name: str, name: str):
         self.watcher_type_name = watcher_type_name
         self.name = name
+
+    def __str__(self) -> str:
+        return self.name
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self})'
