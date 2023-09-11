@@ -23,6 +23,7 @@ class Watcher(metaclass=ABCMeta):
         """Runs the watch logic to look for new releases"""
 
         logger.info(' - running %s', self)
+        result = None
         try:
             start_time = time.time()
             result = self._do_watch()
@@ -30,9 +31,10 @@ class Watcher(metaclass=ABCMeta):
             duration_ms = (end_time - start_time) * 1000
             logger.info(' = Finished running %s in %d ms (%d missed releases found)',
                         self, duration_ms, len(result.missed_releases))
-            return result
         except Exception as e:
             logger.exception('Error running %s : %s', self, e)
+
+        return result
 
     @abstractmethod
     def _do_watch(self) -> WatchResult:

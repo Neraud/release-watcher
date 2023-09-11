@@ -129,8 +129,7 @@ class DockerRegistryWatcher(Watcher):
 
         for key in parsed_hearder['bearer']:
             if key != 'realm':
-                auth_params.append('%s=%s' %
-                                   (key, parsed_hearder['bearer'][key]))
+                auth_params.append(f'{key}={parsed_hearder["bearer"][key]}')
         auth_url = f'{realm}?{"&".join(auth_params)}'
         headers = {'Content-Type': 'application/json'}
         response = requests.get(auth_url, headers=headers, timeout=self.config.timeout)
@@ -168,8 +167,7 @@ class DockerRegistryWatcher(Watcher):
                     if tag_date is None or m_date > tag_date:
                         tag_date = m_date
             else:
-                tag_date = self._get_tag_date_from_config(
-                    content['config']['digest'])
+                tag_date = self._get_tag_date_from_config(content['config']['digest'])
 
             return tag_date
 
@@ -215,10 +213,7 @@ class DockerRegistryWatcher(Watcher):
         response = requests.get(api_url, headers=headers, timeout=self.config.timeout)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
-            if 'created' in content:
-                return dateutil.parser.parse(content['created'])
-            else:
-                return None
+            return dateutil.parser.parse(content['created']) if 'created' in content else None
 
         logger.debug('Docker registry api call failed, response code %d', response.status_code)
         logger.debug('headers : %s', response.headers)

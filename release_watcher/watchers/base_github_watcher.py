@@ -73,3 +73,5 @@ class BaseGithubWatcher(Watcher, metaclass=ABCMeta):
 
             raise WatchError('Github rate limit exeeded, and reset is too far '
                              f'({rl_reset_sec}s > {self.config.rate_limit_wait_max}s)')
+
+        raise WatchError('Github rate limit exeeded with no reset')
