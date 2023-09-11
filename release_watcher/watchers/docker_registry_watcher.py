@@ -145,6 +145,7 @@ class DockerRegistryWatcher(Watcher):
             'Accept': ','.join([
                 'application/vnd.docker.distribution.manifest.v2+json',
                 'application/vnd.oci.image.index.v1+json',
+                'application/vnd.oci.image.manifest.v1+json',
             ])
         }
 
@@ -200,7 +201,10 @@ class DockerRegistryWatcher(Watcher):
     def _get_tag_date_from_config(self, digest: str) -> datetime:
         api_url = f'https://{self.config.repo}/v2/{self.config.image}/blobs/{digest}'
         headers = {
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+            'Accept': ','.join([
+                'application/vnd.docker.distribution.manifest.v2+json',
+                'application/vnd.oci.image.manifest.v1+json',
+            ])
         }
 
         if self.auth_token:
