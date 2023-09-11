@@ -10,9 +10,16 @@ core:
 
 common:
   github:
+    timeout: 10
     rate_limit_wait_max: 120
     #username: name
     #password: password or pat
+  docker:
+    timeout: 10
+  pypi:
+    timeout: 10
+  raw_html:
+    timeout: 10
 
 sources:
   - type: inline
@@ -36,20 +43,21 @@ sources:
           - 5\..*
         excludes:
           - .*[ab][1-9]$
-      - name: TestGogs
+      # Example only, use the github_commit type instead !
+      - name: Raw Release Watcher
         type: raw_html
-        page_url: https://try.gogs.io/gogs/gogs/commits/master
-        id: 5a52ee75e3
-        container_selector: "#commits-table"
-        item_selector: "tbody tr"
-        id_selector: "[class~=sha]"
+        page_url: https://github.com/Neraud/release-watcher/commits/main
+        id: 3d0f1c0
+        container_selector: ".js-navigation-container"
+        item_selector: "li"
+        id_selector: ".Button-withTooltip a .Button-label"
         id_attribute: ""
-        date_selector: "[class~=time-since]"
-        date_attribute: "title"
+        date_selector: "relative-time"
+        date_attribute: "datetime"
         reverse: False
-        basic_auth:
-          username: your_username
-          password: your_password
+        #basic_auth:
+        #  username: your_username
+        #  password: your_password
   - type: file
     path: github_watchers.yaml
 

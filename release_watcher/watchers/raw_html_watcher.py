@@ -25,6 +25,7 @@ class RawHtmlWatcherConfig(WatcherConfig):
     reverse: bool = False
     basic_auth: Dict = None
     current_id: str = None
+    timeout: float
 
     def __init__(self, name: str, page_url: str, current_id: str):
         super().__init__(WATCHER_TYPE_NAME, name)
@@ -44,7 +45,7 @@ class RawHtmlWatcher(Watcher):
     def _do_watch(self) -> WatchResult:
         logger.debug('Watching raw html %s', self.config)
         item_elements = self._call_raw_page()
-        current_id = self.config.id
+        current_id = self.config.current_id
         current_release = None
         missed_items = []
 
@@ -77,7 +78,7 @@ class RawHtmlWatcher(Watcher):
             auth = (self.config.basic_auth['username'], self.config.basic_auth['password'])
         else:
             auth = None
-        response = requests.get(self.config.page_url, auth=auth)
+        response = requests.get(self.config.page_url, auth=auth, timeout=self.config.timeout)
 
         if response.status_code == 200:
             response_content = response.content.decode('utf-8')
@@ -127,7 +128,7 @@ class RawHtmlWatcherType(WatcherType):
 
     def parse_config(self, common_config: CommonConfig, watcher_config: Dict):
         page_url = watcher_config['page_url']
-        current_id = str(watcher_config['current_id'])
+        current_id = str(watcher_config['id'])
         name = watcher_config.get('name', page_url)
 
         config = RawHtmlWatcherConfig(name, page_url, current_id)
@@ -148,6 +149,7 @@ class RawHtmlWatcherType(WatcherType):
             config.reverse = watcher_config['reverse']
         if 'basic_auth' in watcher_config:
             config.basic_auth = watcher_config['basic_auth']
+        config.timeout = watcher_config.get('timeout', common_config.raw_html.timeout)
 
         return config
 

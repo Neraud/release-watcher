@@ -48,6 +48,9 @@ They are grouped by services.
 ```yaml
 common:
   github:
+  docker:
+  pypi:
+  raw_html:
 ```
 
 ### GitHub
@@ -57,6 +60,7 @@ common:
   github:
     username: name
     password: password or pat
+    timeout: 10
     rate_limit_wait_max: 120
 ```
 
@@ -64,9 +68,46 @@ These settings are applied by default on `github_release`, `github_tag` and `git
 
 * `username` : username to access the GitHub API
 * `password` : password or [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to access GitHub API
+* `timeout` : timeout in seconds for each request
 * `rate_limit_wait_max` : maximum number of seconds allowed to wait if the rate limit is exceeded
 
 When authenticated, GitHub has a much high [rate limit](https://developer.github.com/v3/#rate-limiting).
+
+### Docker
+
+```yaml
+common:
+  docker:
+    timeout: 10
+```
+
+These settings are applied by default on `docker_registry` watchers.
+
+* `timeout` : timeout in seconds for each request
+
+### Pypi
+
+```yaml
+common:
+  pypi:
+    timeout: 10
+```
+
+These settings are applied by default on `pypi` watchers.
+
+* `timeout` : timeout in seconds for each request
+
+### Raw HTML
+
+```yaml
+common:
+  raw_html:
+    timeout: 10
+```
+
+These settings are applied by default on `raw_html` watchers.
+
+* `timeout` : timeout in seconds for each request
 
 ## Sources
 

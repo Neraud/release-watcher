@@ -17,6 +17,7 @@ class BaseGithubConfig(WatcherConfig):
     repo: str = None
     username: str = None
     password: str = None
+    timeout: float
     rate_limit_wait_max: int
 
     def __init__(self, watcher_type_name: str, name: str, repo: str):
@@ -42,7 +43,7 @@ class BaseGithubWatcher(Watcher, metaclass=ABCMeta):
         else:
             auth = None
 
-        response = requests.get(github_url, headers=headers, auth=auth)
+        response = requests.get(github_url, headers=headers, auth=auth, timeout=self.config.timeout)
 
         if response.status_code == 200:
             res = json.loads(response.content.decode('utf-8'))

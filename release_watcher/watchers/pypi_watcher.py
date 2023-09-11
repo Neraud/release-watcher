@@ -21,14 +21,16 @@ class PyPIWatcherConfig(WatcherConfig):
     version: str = None
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
+    timeout: float
 
     def __init__(self, name: str, package: str, version: str,
-                 includes: Sequence[str], excludes: Sequence[str]):
+                 includes: Sequence[str], excludes: Sequence[str], timeout: float):
         super().__init__(WATCHER_TYPE_NAME, name)
         self.package = package
         self.version = version
         self.includes = includes
         self.excludes = excludes
+        self.timeout = timeout
 
     def __str__(self) -> str:
         return f'{self.package}:{self.version}'
@@ -95,7 +97,7 @@ class PyPIWatcher(Watcher):
         pypi_package_url = f'https://pypi.org/pypi/{self.config.package}/json'
         headers = {'Content-Type': 'application/json'}
 
-        response = requests.get(pypi_package_url, headers=headers)
+        response = requests.get(pypi_package_url, headers=headers, timeout=self.config.timeout)
         return response
 
     def _get_release_date(self, items: Sequence) -> datetime:
@@ -114,10 +116,11 @@ class PyPIWatcherType(WatcherType):
         version = str(watcher_config['version'])
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
+        timeout = watcher_config.get('timeout', common_config.pypi.timeout)
 
         name = watcher_config.get('name', f'{package}:{version}')
 
-        return PyPIWatcherConfig(name, package, version, includes, excludes)
+        return PyPIWatcherConfig(name, package, version, includes, excludes, timeout)
 
     def create_watcher(self, watcher_config: PyPIWatcherConfig) -> PyPIWatcher:
         return PyPIWatcher(watcher_config)

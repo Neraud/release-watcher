@@ -6,7 +6,8 @@ from yaml import load
 from release_watcher.sources import source_manager
 from release_watcher.outputs import output_manager
 from release_watcher.config_models import \
-    ConfigException, GlobalConfig, LoggerConfig, CommonConfig, CoreConfig, GithubConfig
+    ConfigException, GlobalConfig, LoggerConfig, CommonConfig, CoreConfig, \
+    GithubConfig, DockerConfig, PypiConfig, RawHtmlConfig
 
 try:
     from yaml import CLoader as Loader  # pylint: disable=ungrouped-imports
@@ -71,6 +72,10 @@ def _parse_conf(conf: Dict) -> GlobalConfig:
     config.core = _parse_core_conf(conf)
     config.common = CommonConfig()
     config.common.github = _parse_github_conf(conf)
+    config.common.docker = _parse_docker_conf(conf)
+    config.common.pypi = _parse_pypi_conf(conf)
+    config.common.raw_html = _parse_raw_html_conf(conf)
+
     config.sources = _parse_sources_conf(conf)
     if not config.sources:
         raise ConfigException('No valid source configuration found')
@@ -118,24 +123,97 @@ def _parse_core_conf(conf: Dict) -> CoreConfig:
 def _parse_github_conf(conf: Dict) -> GithubConfig:
     logger.debug('Loading github configuration')
 
-    default_conf = {'rate_limit_wait_max': 120}
+    default_conf = {
+        'timeout': 10,
+        'rate_limit_wait_max': 120,
+    }
+
     common_conf = conf.get('common', {'github': default_conf})
-    githug_conf = common_conf.get('github', default_conf)
+    github_conf = common_conf.get('github', default_conf)
     github_config = GithubConfig()
 
-    github_config.username = githug_conf.get('username')
-    github_config.password = githug_conf.get('password')
+    github_config.username = github_conf.get('username')
+    github_config.password = github_conf.get('password')
 
-    rate_limit_wait_max = githug_conf.get('rate_limit_wait_max',
+    timeout = github_conf.get('timeout', default_conf['timeout'])
+    if not isinstance(timeout, (int, float)):
+        logger.warning('timeout %s is not a number, falling back to %d',
+                       timeout, default_conf['timeout'])
+        timeout = default_conf['timeout']
+    github_config.timeout = timeout
+
+    rate_limit_wait_max = github_conf.get('rate_limit_wait_max',
                                           default_conf['rate_limit_wait_max'])
     if not isinstance(rate_limit_wait_max, int):
         logger.warning('rate_limit_wait_max %s is not a number, falling back to %d',
                        rate_limit_wait_max, default_conf['rate_limit_wait_max'])
         rate_limit_wait_max = default_conf['rate_limit_wait_max']
-
     github_config.rate_limit_wait_max = rate_limit_wait_max
 
     return github_config
+
+
+def _parse_docker_conf(conf: Dict) -> DockerConfig:
+    logger.debug('Loading docker configuration')
+
+    default_conf = {
+        'timeout': 10,
+    }
+
+    common_conf = conf.get('common', {'docker': default_conf})
+    docker_conf = common_conf.get('docker', default_conf)
+    docker_config = DockerConfig()
+
+    timeout = docker_conf.get('timeout', default_conf['timeout'])
+    if not isinstance(timeout, (int, float)):
+        logger.warning('timeout %s is not a number, falling back to %d',
+                       timeout, default_conf['timeout'])
+        timeout = default_conf['timeout']
+    docker_config.timeout = timeout
+
+    return docker_config
+
+
+def _parse_pypi_conf(conf: Dict) -> PypiConfig:
+    logger.debug('Loading pypi configuration')
+
+    default_conf = {
+        'timeout': 10,
+    }
+
+    common_conf = conf.get('common', {'pypi': default_conf})
+    pypi_conf = common_conf.get('pypi', default_conf)
+    pypi_config = PypiConfig()
+
+    timeout = pypi_conf.get('timeout', default_conf['timeout'])
+    if not isinstance(timeout, (int, float)):
+        logger.warning('timeout %s is not a number, falling back to %d',
+                       timeout, default_conf['timeout'])
+        timeout = default_conf['timeout']
+    pypi_config.timeout = timeout
+
+    return pypi_config
+
+
+def _parse_raw_html_conf(conf: Dict) -> PypiConfig:
+    logger.debug('Loading raw_html configuration')
+
+    default_conf = {
+        'timeout': 10,
+    }
+
+    common_conf = conf.get('common', {'raw_html': default_conf})
+    raw_html_conf = common_conf.get('raw_html', default_conf)
+    raw_html_config = RawHtmlConfig()
+
+    timeout = raw_html_conf.get('timeout', default_conf['timeout'])
+    if not isinstance(timeout, (int, float)):
+        logger.warning('timeout %s is not a number, falling back to %d',
+                       timeout, default_conf['timeout'])
+        timeout = default_conf['timeout']
+    raw_html_config.timeout = timeout
+
+    return raw_html_config
 
 
 def _parse_sources_conf(conf: Dict) -> Sequence[source_manager.SourceConfig]:

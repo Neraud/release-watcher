@@ -23,15 +23,17 @@ class DockerRegistryWatcherConfig(WatcherConfig):
     tag: str = None
     includes: Sequence[str] = []
     excludes: Sequence[str] = []
+    timeout: float
 
     def __init__(self, name: str, repo: str, image: str, tag: str,
-                 includes: Sequence[str], excludes: Sequence[str]):
+                 includes: Sequence[str], excludes: Sequence[str], timeout: float):
         super().__init__(WATCHER_TYPE_NAME, name)
         self.repo = repo
         self.image = image
         self.tag = tag
         self.includes = includes
         self.excludes = excludes
+        self.timeout = timeout
 
     def __str__(self) -> str:
         return f'{self.repo}:{self.image}:{self.tag}'
@@ -117,7 +119,7 @@ class DockerRegistryWatcher(Watcher):
         if self.auth_token:
             headers['Authorization'] = f'Bearer {self.auth_token}'
 
-        response = requests.get(docker_repo_url, headers=headers)
+        response = requests.get(docker_repo_url, headers=headers, timeout=self.config.timeout)
         return response
 
     def _call_docker_registry_api_auth(self, authenticate_header: str) -> str:
@@ -131,7 +133,7 @@ class DockerRegistryWatcher(Watcher):
                                    (key, parsed_hearder['bearer'][key]))
         auth_url = f'{realm}?{"&".join(auth_params)}'
         headers = {'Content-Type': 'application/json'}
-        response = requests.get(auth_url, headers=headers)
+        response = requests.get(auth_url, headers=headers, timeout=self.config.timeout)
 
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
@@ -152,7 +154,7 @@ class DockerRegistryWatcher(Watcher):
         if self.auth_token:
             headers['Authorization'] = f'Bearer {self.auth_token}'
 
-        response = requests.get(docker_repo_url, headers=headers)
+        response = requests.get(docker_repo_url, headers=headers, timeout=self.config.timeout)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
             tag_date = None
@@ -188,7 +190,7 @@ class DockerRegistryWatcher(Watcher):
         if self.auth_token:
             headers['Authorization'] = f'Bearer {self.auth_token}'
 
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=self.config.timeout)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
             return self._get_tag_date_from_config(content['config']['digest'])
@@ -210,7 +212,7 @@ class DockerRegistryWatcher(Watcher):
         if self.auth_token:
             headers['Authorization'] = f'Bearer {self.auth_token}'
 
-        response = requests.get(api_url, headers=headers)
+        response = requests.get(api_url, headers=headers, timeout=self.config.timeout)
         if response.status_code == 200:
             content = json.loads(response.content.decode('utf-8'))
             if 'created' in content:
@@ -242,8 +244,9 @@ class DockerRegistryWatcherType(WatcherType):
         includes = watcher_config.get('includes', [])
         excludes = watcher_config.get('excludes', [])
         name = watcher_config.get('name', f'{repo}:{image}')
+        timeout = watcher_config.get('timeout', common_config.docker.timeout)
 
-        return DockerRegistryWatcherConfig(name, repo, image, tag, includes, excludes)
+        return DockerRegistryWatcherConfig(name, repo, image, tag, includes, excludes, timeout)
 
     def create_watcher(self, watcher_config: DockerRegistryWatcherConfig) -> DockerRegistryWatcher:
         return DockerRegistryWatcher(watcher_config)

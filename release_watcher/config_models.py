@@ -42,13 +42,35 @@ class GithubConfig:
 
     username: str = None
     password: str = None
+    timeout: float = None
     rate_limit_wait_max: int = None
+
+
+class DockerConfig:
+    """Model representing the docker configuration"""
+
+    timeout: float = None
+
+
+class PypiConfig:
+    """Model representing the pypi configuration"""
+
+    timeout: float = None
+
+
+class RawHtmlConfig:
+    """Model representing the raw_html configuration"""
+
+    timeout: float = None
 
 
 class CommonConfig:
     """Model representing common watchers configuration"""
 
     github: GithubConfig = None
+    docker: DockerConfig = None
+    pypi: PypiConfig = None
+    raw_html: RawHtmlConfig = None
 
 
 class GlobalConfig:
